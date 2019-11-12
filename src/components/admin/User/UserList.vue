@@ -23,14 +23,15 @@
                      label="湖南省"
                      value="湖南省"></el-option>
         </el-select>
-        <el-input v-model="query.name"
-                  placeholder="用户名"
+        <el-input v-model="query.NameOrPhone"
+                  placeholder="用户请输入用户昵称或者电话号码"
                   class="handle-input mr10"></el-input>
         <el-button type="primary"
                    icon="el-icon-search"
                    @click="handleSearch">搜索</el-button>
       </div>
       <el-table :data="tableData"
+                v-loading="loading"
                 border
                 class="table"
                 ref="multipleTable"
@@ -58,8 +59,12 @@
 
         <el-table-column prop="user_mailbox"
                          label="邮箱"></el-table-column>
+        <el-table-column prop="user_phone"
+                         label="电话号码"></el-table-column>
+
         <el-table-column prop="user_reg_time"
                          label="用户注册"></el-table-column>
+
         <el-table-column prop="user_birthday"
                          label="用户生日"></el-table-column>
         <el-table-column prop="user_integral"
@@ -97,9 +102,9 @@
       <div class="pagination">
         <el-pagination background
                        layout="total, prev, pager, next"
-                       :current-page="query.pageIndex"
-                       :page-size="query.pageSize"
-                       :total="pageTotal"
+                       :current-page="query.page"
+                       :page-size="query.page_size"
+                       :total="count"
                        @current-change="handlePageChange"></el-pagination>
       </div>
     </div>
@@ -129,22 +134,29 @@
 </template>
 
 <script>
-import { fetchData } from '../../../api/index';
+import { UserList, UserDel } from '../../../api/index';
 export default {
   name: 'basetable',
   data () {
     return {
+      loading: true,
       query: {
         address: '',
         name: '',
-        pageIndex: 1,
-        pageSize: 10
+        page: 1,
+        page_size: 10
+        /*
+        all_page: 14
+count: 139
+page: 1
+page_size: 10
+        */
       },
       tableData: [],
       multipleSelection: [],
       delList: [],
       editVisible: false,
-      pageTotal: 0,
+      count: 0,
       form: {},
       idx: -1,
       id: -1
@@ -156,46 +168,87 @@ export default {
   methods: {
     // 获取 easy-mock 的模拟数据
     getData () {
-      fetchData(this.query).then(res => {
+      this.loading = true
+      UserList(this.query).then(res => {
         console.log(res);
         this.tableData = res.list;
         res.list.forEach((item) => {
           item.user_sex = item.user_sex == 0 ? '男' : '女'
           item.user_status = item.user_status == 1 ? '正常' : '女'
         })
-        this.pageTotal = res.pageTotal || 50;
+        this.count = res.page_info.count
+        this.loading = false
+
+        //this.count = res.count || 50;
       });
     },
     // 触发搜索按钮
     handleSearch () {
-      this.$set(this.query, 'pageIndex', 1);
+      this.$set(this.query, 'page', 1);
       this.getData();
     },
     // 删除操作
     handleDelete (index, row) {
       // 二次确认删除
-      this.$confirm('确定要删除吗？', '提示', {
+      this.$confirm(`确定要删除ID序号为[${row.id}]的用户吗？`, '提示', {
+
         type: 'warning'
       })
         .then(() => {
-          this.$message.success('删除成功');
-          this.tableData.splice(index, 1);
+          //这里去删除
+          this.loading = true
+          UserDel({ 'id[0]': row.id }).then(res => {
+            this.$message.success('删除成功');
+            this.getData()
+
+          })
+          //  UserDel(this)
+
         })
-        .catch(() => { });
+        .catch(() => {
+          this.loading = false
+
+        });
     },
     // 多选操作
     handleSelectionChange (val) {
       this.multipleSelection = val;
     },
     delAllSelection () {
+
       const length = this.multipleSelection.length;
       let str = '';
       this.delList = this.delList.concat(this.multipleSelection);
+      let id = {}
+      let DelIdView = []
       for (let i = 0; i < length; i++) {
-        str += this.multipleSelection[i].name + ' ';
+        //获取用户名
+        id[`id[${i}]`] = this.multipleSelection[i].id   //难点，这里可以发一篇wenzhang
+        DelIdView.push(this.multipleSelection[i].id)
       }
-      this.$message.error(`删除了${str}`);
+
+      // 二次确认删除
+      this.$confirm(`确定要删除ID序号为[${DelIdView}]的用户吗？`, '提示', {
+        type: 'warning'
+      })
+        .then(() => {
+          //这里去删除
+          this.loading = true
+          UserDel(id).then(res => {
+            this.$message.success('删除成功');
+            this.getData()
+          })
+          //  UserDel(this)
+
+        })
+        .catch(() => {
+          this.loading = false
+
+        });
       this.multipleSelection = [];
+
+
+
     },
     // 编辑操作
     handleEdit (index, row) {
@@ -211,7 +264,7 @@ export default {
     },
     // 分页导航
     handlePageChange (val) {
-      this.$set(this.query, 'pageIndex', val);
+      this.$set(this.query, 'page', val);
       this.getData();
     }
   }

@@ -73,6 +73,15 @@ export default {
               index: 'UserList',
               title: '用户列表'
             },
+            // {
+            //   index: 'UserList',
+            //   title: '用户收藏'
+            // },
+            // {
+            //   index: 'UserList',
+            //   title: '用户成绩'
+            // },
+
           ]
         },
         {
@@ -101,7 +110,11 @@ export default {
           index: 'UserOpinion',
           title: '用户意见'
         },
-
+        // {
+        //   icon: 'el-icon-lx-copy',
+        //   index: 'SystemNotice',
+        //   title: '系统通知'
+        // }
 
         // {
         //     icon: 'el-icon-lx-calendar',

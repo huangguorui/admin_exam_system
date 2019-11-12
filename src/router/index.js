@@ -60,6 +60,17 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "table" */ '../components/admin/Opinion/UserOpinion.vue'),
                     meta: { title: '用户意见反馈' }
                 },
+                    /*
+                    所有考生的考试成绩
+                    所有考生收藏的题目
+                    用户考试成绩一览
+                    
+                    */
+                   
+
+
+
+
 
                 {
                     path: '/icon',
