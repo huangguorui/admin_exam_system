@@ -20,7 +20,7 @@
         </el-upload>
         {{subjectNumber}}
 
-        <el-select v-model="route"
+        <el-select v-model="link.route"
                    placeholder="请选择当前未选择的试题">
           <el-option :label="item"
                      :value="item"
@@ -28,7 +28,7 @@
                      :keys="item"></el-option>
         </el-select>
         <!-- 栏目名  栏目名id要传到后台 -->
-        <el-select v-model="columnId"
+        <el-select v-model="link.column_id"
                    placeholder="请选择栏目">
           <el-option :label="item.name"
                      :value="item.id"
@@ -36,9 +36,13 @@
                      :keys="item.id"></el-option>
         </el-select>
         <!-- column -->
-        <el-input v-model="tableData.subject_name_id"
+        <el-input v-model="link.name"
                   style="width:300px"
                   placeholder="试卷标题"></el-input>
+
+        <el-button type="primary"
+                   @click="postLink">点击建立连接</el-button>
+
         <el-button type="primary"
                    @click="postList">立即上传试卷</el-button>
         <span> 请选择文件进行上传吧！</span>
@@ -46,15 +50,15 @@
                id="excel-file"
                @change="addData($event)"
                ref="dataFile">
-        <ul>
+        <!-- <ul>
           <li v-for="(item,index) in subject"
               :key="index">
             题目{{index+1}} <span style="margin:15px 35px;display:inline-block;">试题名称：{{item.subjectName==0?'未指定':item.subjectName}}</span> <span style="margin:15px  25px;display:inline-block;">所属分类：{{item.columnName==0?'未指定':item.columnName}}</span>
 
           </li>
-        </ul>
+        </ul> -->
 
-        <el-table :data="subject"
+        <!-- <el-table :data="subject"
                   style="width: 100%">
           <el-table-column prop="subjectName"
                            label="试题名称"
@@ -65,7 +69,7 @@
                            width="220">
           </el-table-column>
 
-        </el-table>
+        </el-table> -->
         <el-table :data="tableData"
                   stripe
                   style="width: 100%;margin-top:30px">
@@ -114,20 +118,24 @@
 
 <script>
 import XLSX from 'xlsx';
-import { OneSubjectImport, ColumnList, SubjectList } from '@/api/index';
+import { OneSubjectImport, ColumnList, SubjectList, Relation } from '@/api/index';
 
 export default {
   name: 'basetable',
   data () {
     return {
-      route:'',
+      link: {
+        column_id: '', //栏目id
+        name: '', //当前试题名
+        route: '' //当前路由名
+      },
       subjectNumber: [],
       //栏目ID获取
       subject: [{
         subjectName: '',
         columnName: ''
       }],
-      columnId: '',  //栏目id
+      column_id: '',
       column: [
         {
           id: '0',
@@ -138,26 +146,27 @@ export default {
       tableData: [{
         subject_name_id: '',  //本套试题所属的id
         route: '',//试题所属id
-        type: '选择题',//试题属性			
-        test_paper_name: '在Word的编辑状态，当前文档中有一个表格，选定列后，单击表格菜单中"删除列"命令后( )。',//题目名
-        a: '表格中的内容全部被删除，但表格还存在',
-        b: '表格和内容全部被删除',
-        c: '表格被删除，但表格中的内容未被删除',
-        d: '表格中插入点所在的列被删除',
-        answer: 'd',//答案
-        score: '2',//分数
-      }, {
-        subject_name_id: '',  //本套试题所属的id
-        route: '',//试题所属id
-        type: '选择题',//试题属性			
-        test_paper_name: '在Word的编辑状态，当前文档中有一个表格，选定列后，单击表格菜单中"删除列"命令后( )。',//题目名
-        a: '表格中的内容全部被删除，但表格还存在',
-        b: '表格和内容全部被删除',
-        c: '表格被删除，但表格中的内容未被删除',
-        d: '表格中插入点所在的列被删除',
-        answer: 'd',//答案
-        score: '2',//分数
-      }
+        type: '',//试题属性			
+        test_paper_name: '',//题目名
+        a: '',
+        b: '',
+        c: '',
+        d: '',
+        answer: '',//答案
+        score: '',//分数
+      },
+        // {
+        //   subject_name_id: '',  //本套试题所属的id
+        //   route: '',//试题所属id
+        //   type: '选择题',//试题属性			
+        //   test_paper_name: '在Word的编辑状态，当前文档中有一个表格，选定列后，单击表格菜单中"删除列"命令后( )。',//题目名
+        //   a: '表格中的内容全部被删除，但表格还存在',
+        //   b: '表格和内容全部被删除',
+        //   c: '表格被删除，但表格中的内容未被删除',
+        //   d: '表格中插入点所在的列被删除',
+        //   answer: 'd',//答案
+        //   score: '2',//分数
+        // }
       ]
     }
 
@@ -175,12 +184,29 @@ export default {
   },
   methods: {
     getColumnList () {
-      ColumnList().then(res => {
+      ColumnList({ page_size: 50 }).then(res => {
         this.column = res.list
         console.log('res', res);
         // this.$message.success('操作成功');
 
       });
+    },
+    postLink () {
+
+
+      //Relation
+      Relation(this.link).then(res => {
+        this.$message.success('关联成功')
+
+        // this.$message.success('操作成功');
+
+      });
+      this.link = {
+        column_id: '', //栏目id
+        name: '', //当前试题名
+        route: '' //当前路由名
+      }
+      this.tableData()
     },
 
     addData (e) {
@@ -236,9 +262,21 @@ export default {
 
         console.log('res', res);
         this.$message.success('操作成功');
-
       });
-
+      this.getColumnList()
+      //添加完成清空
+      this.tableData = {
+        subject_name_id: '',  //本套试题所属的id
+        route: '',//试题所属id
+        type: '',//试题属性			
+        test_paper_name: '',//题目名
+        a: '',
+        b: '',
+        c: '',
+        d: '',
+        answer: '',//答案
+        score: '',//分数
+      }
       // this.$http.post('/adminapi/link/add-list',
       //   { data: this.tableData }).then((res) => {
       //     this.$Message.success('提交成功');

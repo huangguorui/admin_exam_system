@@ -27,6 +27,11 @@ export default {
     this.currentChange()
   },
   methods: {
+    customPageSize(){
+      this.query.page_size=50
+
+    } ,   
+
     currentChange () {
       console.log(1)
     },

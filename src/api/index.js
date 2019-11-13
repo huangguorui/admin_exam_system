@@ -60,6 +60,14 @@ export const ColumnList = query => {
     });
 };
 
+//关联试卷和栏目的关系，并且给试卷取名
+export const Relation = query => {
+    return request({
+        url: '/column/relation',
+        method: 'post',
+        data: qs.stringify(query)
+    });
+};
 
 /* OneSubjectImport  试题导入界面*/
 
