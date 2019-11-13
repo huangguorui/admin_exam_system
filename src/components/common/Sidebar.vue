@@ -105,6 +105,14 @@ export default {
 
           ]
         },
+
+
+        {
+          icon: 'el-icon-lx-copy',
+          index: 'Column',
+          title: '栏目管理'
+        },
+
         {
           icon: 'el-icon-lx-copy',
           index: 'UserOpinion',

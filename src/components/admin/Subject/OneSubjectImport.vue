@@ -18,33 +18,94 @@
           <div class="el-upload__tip"
                slot="tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
-        <p>下面显示的就是试题的内容</p>
+        {{subjectNumber}}
+
+        <el-select v-model="route"
+                   placeholder="请选择当前未选择的试题">
+          <el-option :label="item"
+                     :value="item"
+                     v-for="item in subjectNumber"
+                     :keys="item"></el-option>
+        </el-select>
+        <!-- 栏目名  栏目名id要传到后台 -->
+        <el-select v-model="columnId"
+                   placeholder="请选择栏目">
+          <el-option :label="item.name"
+                     :value="item.id"
+                     v-for="item in column"
+                     :keys="item.id"></el-option>
+        </el-select>
+        <!-- column -->
+        <el-input v-model="tableData.subject_name_id"
+                  style="width:300px"
+                  placeholder="试卷标题"></el-input>
+        <el-button type="primary"
+                   @click="postList">立即上传试卷</el-button>
+        <span> 请选择文件进行上传吧！</span>
+        <input type="file"
+               id="excel-file"
+               @change="addData($event)"
+               ref="dataFile">
+        <ul>
+          <li v-for="(item,index) in subject"
+              :key="index">
+            题目{{index+1}} <span style="margin:15px 35px;display:inline-block;">试题名称：{{item.subjectName==0?'未指定':item.subjectName}}</span> <span style="margin:15px  25px;display:inline-block;">所属分类：{{item.columnName==0?'未指定':item.columnName}}</span>
+
+          </li>
+        </ul>
+
+        <el-table :data="subject"
+                  style="width: 100%">
+          <el-table-column prop="subjectName"
+                           label="试题名称"
+                           width="220">
+          </el-table-column>
+          <el-table-column prop="columnName"
+                           label="栏目名称"
+                           width="220">
+          </el-table-column>
+
+        </el-table>
         <el-table :data="tableData"
                   stripe
                   style="width: 100%;margin-top:30px">
-          <el-table-column prop="date"
-                           label="试题类型"
-                           width="180">
+
+          <el-table-column prop="route"
+                           label="试卷序列ID">
           </el-table-column>
-          <el-table-column prop="name"
+          <el-table-column prop="subject_name_id"
+                           label="试卷名称【ID】">
+          </el-table-column>
+          <el-table-column prop="type"
+                           label="试题属性">
+          </el-table-column>
+
+          <el-table-column prop="test_paper_name"
                            label="试题标题"
-                           width="180">
+                           width="200">
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="a"
                            label="答案A">
           </el-table-column>
-          <el-table-column prop="address"
-                           label="答案A">
+          <el-table-column prop="b"
+                           label="答案B">
           </el-table-column>
-          <el-table-column prop="address"
-                           label="答案A">
+          <el-table-column prop="c"
+                           label="答案C">
           </el-table-column>
-          <el-table-column prop="address"
-                           label="答案A">
+          <el-table-column prop="d"
+                           label="答案D">
+          </el-table-column>
+          <el-table-column prop="answer"
+                           label="答案">
+          </el-table-column>
+          <el-table-column prop="score"
+                           label="分数">
           </el-table-column>
         </el-table>
 
         <el-button>点击生成试卷</el-button>
+
       </div>
     </div>
 
@@ -52,33 +113,140 @@
 </template>
 
 <script>
+import XLSX from 'xlsx';
+import { OneSubjectImport, ColumnList, SubjectList } from '@/api/index';
+
 export default {
   name: 'basetable',
   data () {
     return {
+      route:'',
+      subjectNumber: [],
+      //栏目ID获取
+      subject: [{
+        subjectName: '',
+        columnName: ''
+      }],
+      columnId: '',  //栏目id
+      column: [
+        {
+          id: '0',
+          name: '栏目'
+        },
+
+      ],
       tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
+        subject_name_id: '',  //本套试题所属的id
+        route: '',//试题所属id
+        type: '选择题',//试题属性			
+        test_paper_name: '在Word的编辑状态，当前文档中有一个表格，选定列后，单击表格菜单中"删除列"命令后( )。',//题目名
+        a: '表格中的内容全部被删除，但表格还存在',
+        b: '表格和内容全部被删除',
+        c: '表格被删除，但表格中的内容未被删除',
+        d: '表格中插入点所在的列被删除',
+        answer: 'd',//答案
+        score: '2',//分数
       }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+        subject_name_id: '',  //本套试题所属的id
+        route: '',//试题所属id
+        type: '选择题',//试题属性			
+        test_paper_name: '在Word的编辑状态，当前文档中有一个表格，选定列后，单击表格菜单中"删除列"命令后( )。',//题目名
+        a: '表格中的内容全部被删除，但表格还存在',
+        b: '表格和内容全部被删除',
+        c: '表格被删除，但表格中的内容未被删除',
+        d: '表格中插入点所在的列被删除',
+        answer: 'd',//答案
+        score: '2',//分数
+      }
+      ]
     }
 
   },
   created () {
+    this.getColumnList()
+    SubjectList().then(res => {
+      this.subject = res.list
+      console.log('res', res);
+      this.subjectNumber = res.number
+
+      // this.$message.success('操作成功');
+
+    });
   },
   methods: {
+    getColumnList () {
+      ColumnList().then(res => {
+        this.column = res.list
+        console.log('res', res);
+        // this.$message.success('操作成功');
+
+      });
+    },
+
+    addData (e) {
+      let _this = this
+      var files = e.target.files;
+      var fileReader = new FileReader();
+      fileReader.onload = function (ev) {
+        console.log('ev', ev)
+        var data = ev.target.result,
+          workbook = XLSX.read(data, {
+            type: 'binary'
+          }), // 以二进制流方式读取得到整份excel表格对象
+          persons = []; // 存储获取到的数据
+        try {
+          var data = ev.target.result,
+            workbook = XLSX.read(data, {
+              type: 'binary'
+            }), // 以二进制流方式读取得到整份excel表格对象
+            persons = []; // 存储获取到的数据
+        } catch (e) {
+          console.log('文件类型不正确');
+          return;
+        }
+
+        // 表格的表格范围，可用于判断表头是否数量是否正确
+        var fromTo = '';
+        // 遍历每张表读取
+        for (var sheet in workbook.Sheets) {
+          if (workbook.Sheets.hasOwnProperty(sheet)) {
+            fromTo = workbook.Sheets[sheet]['!ref'];
+            console.log(fromTo);
+            persons = persons.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
+            // break; // 如果只取第一张表，就取消注释这行
+          }
+        }
+
+        console.log(persons);
+        _this.tableData = persons
+        _this.tableData.forEach((item, index) => {
+          _this.tableData[index].route = 10
+        })
+      };
+
+      console.log('this.tableData', this.tableData)
+      // 以二进制方式打开文件
+      fileReader.readAsBinaryString(files[0]);
+
+    },
+    postList () {
+      //
+      let subject_list = this.tableData
+      OneSubjectImport({ data: this.tableData }).then(res => {
+
+        console.log('res', res);
+        this.$message.success('操作成功');
+
+      });
+
+      // this.$http.post('/adminapi/link/add-list',
+      //   { data: this.tableData }).then((res) => {
+      //     this.$Message.success('提交成功');
+      //   }).catch((err) => {
+      //     this.$Message.error(err);
+      //   });
+    },
+
     // 获取 easy-mock 的模拟数据
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {

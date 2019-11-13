@@ -33,6 +33,76 @@ export const UserSave = query => {
         params: query
     });
 };
+import qs from 'qs'
+
+//excel导入
+export const OneSubjectImport = query => {
+
+    console.log('qs', qs)
+    console.log('query', query)
+    return request({
+        url: '/link/add-list',
+        method: 'post',
+        data: qs.stringify(query)
+    });
+};
+//qs.stringify(query)
+
+
+/* OneSubjectImport  试题导入界面*/
+
+//栏目列表
+export const ColumnList = query => {
+    return request({
+        url: '/column/column-list',
+        method: 'get',
+        params: query
+    });
+};
+
+
+/* OneSubjectImport  试题导入界面*/
+
+
+/* column  栏目增删改查*/
+
+//添加a and 修改栏目
+export const ColumnSave = query => {
+    return request({
+        url: '/column/column-save',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+
+export const ColumnDel = query => {
+    return request({
+        url: '/column/column-del',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+
+
+
+
+/* column  栏目增删改查*/
+
+
+// 试题列表
+
+
+export const SubjectList = query => {
+    return request({
+        url: '/column/subject-status-list',
+        method: 'get',
+        params: query
+
+    });
+};
+
 
 
 /**
