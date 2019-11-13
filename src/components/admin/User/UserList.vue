@@ -168,6 +168,7 @@ page_size: 10
   methods: {
     // 获取 easy-mock 的模拟数据
     getData () {
+      let _this = this
       this.loading = true
       UserList(this.query).then(res => {
         console.log(res);
@@ -179,8 +180,11 @@ page_size: 10
         this.count = res.page_info.count
         this.loading = false
 
-        //this.count = res.count || 50;
-      });
+      }).catch(function (error) {
+        console.log('发生错误！', error);
+        _this.loading = false
+
+      })
     },
     // 触发搜索按钮
     handleSearch () {
@@ -198,7 +202,7 @@ page_size: 10
           //这里去删除
           this.loading = true
           UserDel({ 'id[0]': row.id }).then(res => {
-            this.$message.success('删除成功');
+            this.$message.success('删除成功')
             this.getData()
 
           })

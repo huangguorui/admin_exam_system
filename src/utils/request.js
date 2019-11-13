@@ -22,7 +22,25 @@ service.interceptors.response.use(
     response => {
         if (response.status === 200) {
             console.log('response.data.data', response.data.msg)
-            Message.success(response.data.msg);
+            //  Message.success(response.data.msg);
+            // if (response.data.msg == '操作失败!'){
+            //     Message.error(response.data.msg);
+
+            //    }
+            // if (response.data.code == 1) {
+            //     //成功
+            //     Message.success(response.data.msg);
+
+            // }
+            if (response.data.code == 0) {
+                //失败
+                Message.error(response.data.msg);
+
+            }
+            // //操作失败就需要提示一下了
+            // if (response.data.msg == '操作失败!') {
+            //     Message.error(response.data.msg);
+            // }
 
             return response.data.data;
         } else {
@@ -30,7 +48,10 @@ service.interceptors.response.use(
         }
     },
     error => {
+        Message.error('网络错误');
         console.log(error);
+        Message.error(response.data.msg);
+
         return Promise.reject();
     }
 );

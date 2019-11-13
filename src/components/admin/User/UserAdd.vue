@@ -29,6 +29,11 @@
                         prop="user_img">
             <el-input v-model="ruleForm.user_img"></el-input>
           </el-form-item>
+          <el-form-item label="用户邮箱"
+                        prop="user_mailbox">
+            <el-input v-model="ruleForm.user_mailbox"></el-input>
+          </el-form-item>
+
           <el-form-item label="用户昵称"
                         prop="user_nickname">
             <el-input v-model="ruleForm.user_nickname"></el-input>
@@ -50,9 +55,16 @@
                         prop="user_integral">
             <el-input v-model="ruleForm.user_integral"></el-input>
           </el-form-item>
+
           <el-form-item label="用户性别"
                         prop="user_sex">
-            <el-input v-model="ruleForm.user_sex"></el-input>
+            <el-select v-model="ruleForm.user_sex"
+                       placeholder="请选择性别">
+              <el-option label="男"
+                         value="0"></el-option>
+              <el-option label="女"
+                         value="1"></el-option>
+            </el-select>
           </el-form-item>
 
           <el-button type="primary"
@@ -75,6 +87,7 @@ export default {
       ruleForm: {
         user_phone: '',//用户电话
         user_img: '',//用户头像
+        user_mailbox: '',//用户邮箱
         user_nickname: '',//用户昵称
         user_username: '',//用户真实姓名
         user_birthday: '',//用户生日
@@ -137,10 +150,11 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
 
           UserSave(this.ruleForm).then(res => {
             console.log('res', res);
+            this.$message.success('操作成功');
+
           });
 
           //重置操作
