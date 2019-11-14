@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i>用户添加
+          <i class="el-icon-lx-cascades"></i> {{topTitle}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -27,7 +27,18 @@
 
           <el-form-item label="用户头像"
                         prop="user_img">
-            <el-input v-model="ruleForm.user_img"></el-input>
+
+            <el-upload class="upload-demo"
+                       drag
+                       action="//www.vuecli.com/api/user/user-photo"
+                       multiple>
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__tip"
+                   slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+
+            <!-- <el-input v-model="ruleForm.user_img"></el-input> -->
           </el-form-item>
           <el-form-item label="用户邮箱"
                         prop="user_mailbox">
@@ -81,7 +92,7 @@
 <script>
 import { UserSave } from '../../../api/index';
 export default {
-  name: 'basetable',
+  name: 'UserAdd',
   data () {
     return {
       ruleForm: {
@@ -96,54 +107,51 @@ export default {
         user_integral: '',//用户积分
         user_sex: '',//用户性别
         name: '',
-        region: 'x',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
         desc: ''
       },
+      topTitle: '',
       rules: {
-        /*
-          user_phone: '',//用户电话
-                user_img: '',//用户头像
-                user_nickname: '',//用户昵称
-                user_username: '',//用户真实姓名
-                user_birthday: '',//用户生日
-                user_pwd: '',//用户密码
-                user_vip: '',//用户vip等级
-                user_integral: '',//用户积分
-                user_sex: '',//用户性别
-        
-        */
-
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        user_phone: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
         ],
-        region: [
+        user_mailbox: [
           { required: true, message: '请选择活动区域', trigger: 'change' }
         ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        user_nickname: [
+          { required: true, message: '请选择活动区域', trigger: 'change' }
         ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        user_username: [
+          { required: true, message: '请选择活动区域', trigger: 'change' }
+        ],
+        user_birthday: [
+          { required: true, message: '请选择活动区域', trigger: 'change' }
+        ],
+
+        user_birthday: [
+          { type: 'date', required: true, message: '请选择你的生日', trigger: 'change' }
+        ],
+        user_pwd: [
+          { type: 'date', required: true, message: '请输入密码', trigger: 'change' }
         ],
         type: [
           { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
         ],
-        resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
+        user_vip: [
+          { required: true, message: '请输入用户VIP等级', trigger: 'change' }
         ],
-        desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
-        ]
+        user_integral: [
+          { required: true, message: '请输入用户积分', trigger: 'blur' }
+        ],
+        user_sex: [
+          { required: true, message: '请输入用户性别', trigger: 'change' }
+        ],
+
       }
     };
   },
   created () {
+    this.topTitle = this.$route.meta.title   //标题
   },
   methods: {
     // 获取 easy-mock 的模拟数据

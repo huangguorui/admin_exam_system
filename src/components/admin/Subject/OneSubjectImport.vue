@@ -3,25 +3,19 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i>试题添加
+          <i class="el-icon-lx-cascades"></i>
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
       <div class="handle-box">
-        <el-upload class="upload-demo"
-                   drag
-                   action="https://jsonplaceholder.typicode.com/posts/"
-                   multiple>
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip"
-               slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
+
+        <el-divider content-position="left">将没有栏目的考卷和栏目进行关联</el-divider>
+
         {{subjectNumber}}
 
         <el-select v-model="link.route"
-                   placeholder="请选择当前未选择的试题">
+                   placeholder="请选择未选择栏目的考卷">
           <el-option :label="item"
                      :value="item"
                      v-for="item in subjectNumber"
@@ -43,13 +37,18 @@
         <el-button type="primary"
                    @click="postLink">点击建立连接</el-button>
 
-        <el-button type="primary"
-                   @click="postList">立即上传试卷</el-button>
-        <span> 请选择文件进行上传吧！</span>
-        <input type="file"
-               id="excel-file"
-               @change="addData($event)"
-               ref="dataFile">
+        <el-divider></el-divider>
+
+        <!-- <el-upload class="upload-demo"
+                   drag
+                   action="https://jsonplaceholder.typicode.com/posts/"
+                   multiple>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip"
+               slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload> -->
+
         <!-- <ul>
           <li v-for="(item,index) in subject"
               :key="index">
@@ -70,6 +69,16 @@
           </el-table-column>
 
         </el-table> -->
+        <el-divider content-position="left">试卷提交</el-divider>
+        <span> 请选择文件进行上传吧！</span>
+        <input type="file"
+               id="excel-file"
+               @change="addData($event)"
+               ref="dataFile">
+        <el-button type="primary"
+                   @click="postList">立即上传试卷</el-button>
+        <el-divider></el-divider>
+
         <el-table :data="tableData"
                   stripe
                   style="width: 100%;margin-top:30px">
@@ -108,8 +117,6 @@
           </el-table-column>
         </el-table>
 
-        <el-button>点击生成试卷</el-button>
-
       </div>
     </div>
 
@@ -143,18 +150,19 @@ export default {
         },
 
       ],
-      tableData: [{
-        subject_name_id: '',  //本套试题所属的id
-        route: '',//试题所属id
-        type: '',//试题属性			
-        test_paper_name: '',//题目名
-        a: '',
-        b: '',
-        c: '',
-        d: '',
-        answer: '',//答案
-        score: '',//分数
-      },
+      tableData: [
+        // {
+        //   subject_name_id: '',  //本套试题所属的id
+        //   route: '',//试题所属id
+        //   type: '',//试题属性			
+        //   test_paper_name: '',//题目名
+        //   a: '',
+        //   b: '',
+        //   c: '',
+        //   d: '',
+        //   answer: '',//答案
+        //   score: '',//分数
+        // },
         // {
         //   subject_name_id: '',  //本套试题所属的id
         //   route: '',//试题所属id
@@ -172,17 +180,22 @@ export default {
 
   },
   created () {
-    this.getColumnList()
-    SubjectList().then(res => {
-      this.subject = res.list
-      console.log('res', res);
-      this.subjectNumber = res.number
-
-      // this.$message.success('操作成功');
-
-    });
+    this.getColumnList()   //获取栏目
+    this.getSubjectList() //获取考试列表以及没有添加栏目的试题
   },
   methods: {
+
+
+    getSubjectList () {
+      SubjectList().then(res => {
+        this.subject = res.list
+        console.log('res', res);
+        this.subjectNumber = res.number
+
+        // this.$message.success('操作成功');
+
+      });
+    },
     getColumnList () {
       ColumnList({ page_size: 50 }).then(res => {
         this.column = res.list
@@ -196,7 +209,12 @@ export default {
 
       //Relation
       Relation(this.link).then(res => {
-        this.$message.success('关联成功')
+        if (res == undefined) {
+
+        } else {
+          this.$message.success('关联成功!')
+
+        }
 
         // this.$message.success('操作成功');
 
@@ -255,35 +273,27 @@ export default {
 
     },
     postList () {
-      //
-      let subject_list = this.tableData
+      if (this.tableData.length == 0) {
+        this.$message.error('请添加试卷后在点击上传')
+        return false;
+      }
       OneSubjectImport({ data: this.tableData }).then(res => {
 
         console.log('res', res);
-        this.$message.success('操作成功');
+        if (res == undefined) {
+
+        } else {
+          this.$message.success('添加成功');
+          this.getSubjectList()
+        }
+
       });
       this.getColumnList()
       //添加完成清空
       this.tableData = [
-        {
-          subject_name_id: '',  //本套试题所属的id
-          route: '',//试题所属id
-          type: '',//试题属性			
-          test_paper_name: '',//题目名
-          a: '',
-          b: '',
-          c: '',
-          d: '',
-          answer: '',//答案
-          score: '',//分数
-        }
+
       ]
-      // this.$http.post('/adminapi/link/add-list',
-      //   { data: this.tableData }).then((res) => {
-      //     this.$Message.success('提交成功');
-      //   }).catch((err) => {
-      //     this.$Message.error(err);
-      //   });
+
     },
 
     // 获取 easy-mock 的模拟数据
