@@ -206,7 +206,6 @@ export default {
         name: '', //当前试题名
         route: '' //当前路由名
       }
-      this.tableData()
     },
 
     addData (e) {
@@ -245,9 +244,9 @@ export default {
 
         console.log(persons);
         _this.tableData = persons
-        _this.tableData.forEach((item, index) => {
-          _this.tableData[index].route = 10
-        })
+        // _this.tableData.forEach((item, index) => {
+        //   _this.tableData[index].route = 10
+        // })
       };
 
       console.log('this.tableData', this.tableData)
@@ -265,18 +264,20 @@ export default {
       });
       this.getColumnList()
       //添加完成清空
-      this.tableData = {
-        subject_name_id: '',  //本套试题所属的id
-        route: '',//试题所属id
-        type: '',//试题属性			
-        test_paper_name: '',//题目名
-        a: '',
-        b: '',
-        c: '',
-        d: '',
-        answer: '',//答案
-        score: '',//分数
-      }
+      this.tableData = [
+        {
+          subject_name_id: '',  //本套试题所属的id
+          route: '',//试题所属id
+          type: '',//试题属性			
+          test_paper_name: '',//题目名
+          a: '',
+          b: '',
+          c: '',
+          d: '',
+          answer: '',//答案
+          score: '',//分数
+        }
+      ]
       // this.$http.post('/adminapi/link/add-list',
       //   { data: this.tableData }).then((res) => {
       //     this.$Message.success('提交成功');
