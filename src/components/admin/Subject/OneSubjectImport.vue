@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i>
+          <i class="el-icon-lx-cascades"></i>  {{$route.meta.title}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>

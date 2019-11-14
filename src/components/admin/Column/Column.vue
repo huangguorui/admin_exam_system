@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i>栏目管理
+          <i class="el-icon-lx-cascades"></i> {{$route.meta.title}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -27,7 +27,6 @@
         <el-input v-model="query.search"
                   placeholder="请输入栏目名"
                   style="width:200px"
-
                   class="handle-input mr10"></el-input>
         <el-button type="primary"
                    icon="el-icon-search"
@@ -65,10 +64,16 @@
             <el-button type="text"
                        icon="el-icon-edit"
                        @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <!-- <el-button type="text"
+                       icon="el-icon-delete"
+                       class="red"
+                       @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+
             <el-button type="text"
                        icon="el-icon-delete"
                        class="red"
-                       @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                       @click="delAllSelection([scope.row])">删除</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -113,18 +118,16 @@ export default {
   name: 'Column',
   data () {
     return {
-      name: '',
-      tableData: [],
-      delList: [],
-      editVisible: false,
-      form: {  //存放删除的数
+      name: '',  //栏目名
+      tableData: [], //当前表数据
+      editVisible: false, //弹框删除
+      form: {  //存放修改的数据 
         name: '',
         id: ''
       },
     };
   },
   mixins: [interList],
-
   created () {
     this.getData();
   },
@@ -134,11 +137,9 @@ export default {
         console.log('res===', res)
         if (res == undefined) {
           this.getData()
-
         } else {
           this.$message.success('操作成功!')
           this.getData()
-
         }
       })
       this.name = ""
@@ -146,11 +147,14 @@ export default {
     postColumnSave () {
       ColumnSave(this.form).then(res => {
         this.$message.success('操作成功!')
-
+        //成功后，清除数据
+        this.form = {
+          name: '',
+          id: ''
+        }
       })
       this.getData()
     },
-    // 获取 easy-mock 的模拟数据
     getData () {
       let _this = this
       this.loading = true
@@ -164,30 +168,14 @@ export default {
       }).catch(function (error) {
         console.log('发生错误！', error);
         _this.loading = false
-
       })
     },
-    // 删除操作
-    handleDelete (index, row) {
-      // 二次确认删除
-      this.$confirm(`确定要删除ID序号为[${row.id}]`, '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          //这里去删除
-          this.loading = true
-          ColumnDel({ 'id[0]': row.id }).then(res => {
-            this.$message.success('删除成功')
-            this.getData()
-          })
-        })
-        .catch(() => {
-          this.loading = false
-
-        });
-    },
-
-    delAllSelection () {
+    //单选多选都可删除
+    delAllSelection (row) {
+      //通过点击删除进来的 传入的参数必须为一个数组
+      if (row) {
+        this.DelId = [row[0].id]
+      }
       // 二次确认删除
       this.$confirm(`确定要删除ID序号为[${this.DelId}]`, '提示', {
         type: 'warning'
@@ -205,39 +193,12 @@ export default {
       this.multipleSelection = [];
 
     },
-
-
   }
 };
 </script>
 
 <style scoped>
-.handle-box {
-    margin-bottom: 20px;
-}
-
-.handle-select {
-    width: 120px;
-}
-
-.handle-input {
-    width: 300px;
-    display: inline-block;
-}
-.table {
-    width: 100%;
-    font-size: 14px;
-}
-.red {
-    color: #ff0000;
-}
-.mr10 {
-    margin-right: 10px;
-}
-.table-td-thumb {
-    display: block;
-    margin: auto;
-    width: 40px;
-    height: 40px;
-}
+/* @import "./../index.css"; */
+/* @import '../../../assets/css/user_index.css'; */
+@import '~@/assets/css/user_index.css';
 </style>

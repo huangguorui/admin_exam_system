@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i> {{topTitle}}
+          <i class="el-icon-lx-cascades"></i> {{$route.meta.title}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -77,7 +77,14 @@
                          value="1"></el-option>
             </el-select>
           </el-form-item>
-
+          <el-button @click="isShowDrawer=true">点击弹框</el-button>
+          <!--   @closeDraw="closeDraw"
+                       @applySubmit="applySubmit"
+                       :title="'新建练习题/修改练习题'" -->
+          <DrawerModel :for-data="list"
+                         @closeDraw="closeDraw"
+              @applySubmit="applySubmit"
+                       :isDrawer.sync="isShowDrawer"></DrawerModel>
           <el-button type="primary"
                      @click="submitForm('ruleForm')">立即创建用户</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -90,11 +97,17 @@
 </template>
 
 <script>
-import { UserSave } from '../../../api/index';
+import { UserSave, UserInfo } from '../../../api/index';
 export default {
   name: 'UserAdd',
   data () {
     return {
+      list: {
+        id: 1,
+        text: '测试数据'
+      },
+      isShowDrawer: false,
+      id: '',
       ruleForm: {
         user_phone: '',//用户电话
         user_img: '',//用户头像
@@ -106,10 +119,7 @@ export default {
         user_vip: '',//用户vip等级
         user_integral: '',//用户积分
         user_sex: '',//用户性别
-        name: '',
-        desc: ''
       },
-      topTitle: '',
       rules: {
         user_phone: [
           { required: true, message: '请输入电话号码', trigger: 'blur' },
@@ -151,10 +161,45 @@ export default {
     };
   },
   created () {
-    this.topTitle = this.$route.meta.title   //标题
+
+    console.log(this.$route.query.id)
+    if (this.$route.query.id) {
+      this.id = this.$route.query.id
+      this.getUserInfo()
+      console.log('执行该函数')
+    }
   },
   methods: {
-    // 获取 easy-mock 的模拟数据
+applySubmit(data){
+console.log('点击了开启',data)
+},
+closeDraw(data){
+console.log('点击了关闭',data)
+
+},
+    postUserSave () {
+      UserInfo({ name: this.name }).then(res => {
+        console.log('res===', res)
+        if (res == undefined) {
+          this.getData()
+        } else {
+          this.$message.success('操作成功!')
+          this.getData()
+        }
+      })
+      // this.name = ""
+    },
+    getUserInfo () {
+      UserInfo({ id: this.id }).then(res => {
+        console.log('res===', res)
+        if (res == undefined) {
+          this.getData()
+        } else {
+          this.$message.success('操作成功!')
+          this.getData()
+        }
+      })
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

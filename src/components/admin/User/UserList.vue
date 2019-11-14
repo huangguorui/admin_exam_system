@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i> 基础表格--测试
+          <i class="el-icon-lx-cascades"></i> {{$route.meta.title}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -12,100 +12,111 @@
         <el-button type="primary"
                    icon="el-icon-delete"
                    class="handle-del mr10"
+                   :disabled="isBtnDisable"
                    @click="delAllSelection">批量删除</el-button>
-        <el-select v-model="query.address"
-                   placeholder="地址"
-                   class="handle-select mr10">
-          <el-option key="1"
-                     label="广东省"
-                     value="广东省"></el-option>
-          <el-option key="2"
-                     label="湖南省"
-                     value="湖南省"></el-option>
-        </el-select>
-        <el-input v-model="query.NameOrPhone"
-                  placeholder="用户请输入用户昵称或者电话号码"
+
+        <el-input v-model="query.search"
+                  placeholder="请输入手机号或用户昵称"
+                  style="width:200px"
                   class="handle-input mr10"></el-input>
         <el-button type="primary"
                    icon="el-icon-search"
                    @click="handleSearch">搜索</el-button>
-      </div>
-      <el-table :data="tableData"
-                v-loading="loading"
-                border
-                class="table"
-                ref="multipleTable"
-                header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange">
-        <el-table-column type="selection"
-                         width="55"
-                         align="center"></el-table-column>
-        <el-table-column prop="id"
-                         label="ID"
-                         width="55"
-                         align="center"></el-table-column>
-        <el-table-column prop="user_nickname"
-                         label="用户名"></el-table-column>
+        <el-input v-model="name"
+                  style="margin-left:10px;width:200px"
+                  placeholder="请输入需要添加的栏目名"
+                  class="handle-input mr10"></el-input>
+        <!-- icon="el-icon-search" -->
+        <el-button type="primary"
+                   @click="addColumn">点击添加栏目</el-button>
 
-        </el-table-column>
-        <el-table-column label="头像(查看大图)"
-                         align="center">
-          <template slot-scope="scope">
-            <el-image class="table-td-thumb"
-                      :src="'http://www.vuecli.com'+scope.row.user_img"
-                      :preview-src-list="['http://www.vuecli.com'+scope.row.user_img]"></el-image>
-          </template>
-        </el-table-column>
+        <el-table :data="tableData"
+                  v-loading="loading"
+                  border
+                  class="table"
+                  ref="multipleTable"
+                  header-cell-class-name="table-header"
+                  @selection-change="handleSelectionChange">
+          <el-table-column type="selection"
+                           width="55"
+                           align="center"></el-table-column>
+          <el-table-column prop="id"
+                           label="ID"
+                           width="55"
+                           align="center"></el-table-column>
+          <el-table-column prop="user_nickname"
+                           label="用户名"></el-table-column>
 
-        <el-table-column prop="user_mailbox"
-                         label="邮箱"></el-table-column>
-        <el-table-column prop="user_phone"
-                         label="电话号码"></el-table-column>
+          </el-table-column>
+          <el-table-column label="头像(查看大图)"
+                           align="center">
+            <template slot-scope="scope">
+              <el-image class="table-td-thumb"
+                        :src="'http://www.vuecli.com'+scope.row.user_img"
+                        :preview-src-list="['http://www.vuecli.com'+scope.row.user_img]"></el-image>
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="user_reg_time"
-                         label="用户注册"></el-table-column>
+          <el-table-column prop="user_mailbox"
+                           label="邮箱"></el-table-column>
+          <el-table-column prop="user_phone"
+                           label="电话号码"></el-table-column>
 
-        <el-table-column prop="user_birthday"
-                         label="用户生日"></el-table-column>
-        <el-table-column prop="user_integral"
-                         label="用户积分"></el-table-column>
-        <el-table-column prop="user_vip"
-                         label="用户等级"></el-table-column>
-        <el-table-column prop="user_adress"
-                         label="地址"></el-table-column>
-        <el-table-column prop="user_sex"
-                         label="用户性别"></el-table-column>
+          <el-table-column prop="user_reg_time"
+                           label="用户注册"></el-table-column>
 
-        <el-table-column prop="user_status"
-                         label="状态"></el-table-column>
-        <!-- <el-table-column label="状态"
+          <el-table-column prop="user_birthday"
+                           label="用户生日"></el-table-column>
+          <el-table-column prop="user_integral"
+                           label="用户积分"></el-table-column>
+          <el-table-column prop="user_vip"
+                           label="用户等级"></el-table-column>
+          <el-table-column prop="user_adress"
+                           label="地址"></el-table-column>
+          <el-table-column prop="user_sex"
+                           label="用户性别"></el-table-column>
+
+          <el-table-column prop="user_status"
+                           label="状态"></el-table-column>
+          <!-- <el-table-column label="状态"
                          align="user_status">
           <template slot-scope="scope">
             <el-tag :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')">{{scope.row.state}}</el-tag>
           </template>
         </el-table-column> -->
+          <el-table-column label="操作"
+                           width="180"
+                           align="center">
+            <template slot-scope="scope">
 
-        <el-table-column label="操作"
-                         width="180"
-                         align="center">
-          <template slot-scope="scope">
-            <el-button type="text"
-                       icon="el-icon-edit"
-                       @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button type="text"
+              <el-button type="text"
+                         icon="el-icon-edit"
+                         @click="userEdit(scope.row.id)">编辑</el-button>
+
+              <!-- <el-button type="text"
+                         icon="el-icon-edit"
+                         @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
+              <!-- <el-button type="text"
                        icon="el-icon-delete"
                        class="red"
-                       @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination">
-        <el-pagination background
-                       layout="total, prev, pager, next"
-                       :current-page="query.page"
-                       :page-size="query.page_size"
-                       :total="count"
-                       @current-change="handlePageChange"></el-pagination>
+                       @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+
+              <el-button type="text"
+                         icon="el-icon-delete"
+                         class="red"
+                         @click="delAllSelection([scope.row])">删除</el-button>
+
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="pagination">
+          <el-pagination background
+                         layout="total, prev, pager, next"
+                         :current-page="query.page"
+                         :page-size="query.page_size"
+                         :total="count"
+                         @current-change="handlePageChange"></el-pagination>
+        </div>
       </div>
     </div>
 
@@ -117,11 +128,9 @@
                :model="form"
                label-width="70px">
         <el-form-item label="用户名">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.user_nickname"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address"></el-input>
-        </el-form-item>
+
       </el-form>
       <span slot="footer"
             class="dialog-footer">
@@ -134,48 +143,69 @@
 </template>
 
 <script>
+import interList from '@/common/mixins/list'
+
 import { UserList, UserDel } from '../../../api/index';
+import { ColumnSave, ColumnDel, ColumnList } from '../../../api/index';
 export default {
-  name: 'basetable',
+  name: 'UserList',
   data () {
     return {
-      loading: true,
-      query: {
-        address: '',
-        name: '',
-        page: 1,
-        page_size: 10
-        /*
-        all_page: 14
-count: 139
-page: 1
-page_size: 10
-        */
+      name: '',  //栏目名
+      tableData: [], //当前表数据
+      editVisible: false, //弹框删除
+      form: {  //存放修改的数据 
+        user_nickname: '',
+        id: ''
       },
-      tableData: [],
-      multipleSelection: [],
-      delList: [],
-      editVisible: false,
-      count: 0,
-      form: {},
-      idx: -1,
-      id: -1
     };
   },
+  mixins: [interList],
   created () {
     this.getData();
   },
   methods: {
-    // 获取 easy-mock 的模拟数据
+    //用户跳转
+    userEdit (id) {
+      this.$router.push({ //核心语句
+        path: '/UserAdd', //跳转的路径
+        query: { //路由传参时push和query搭配使用 ，作用时传递参数
+          id: id,
+        }
+      })
+    },
+    addColumn () {
+      ColumnSave({ name: this.name }).then(res => {
+        console.log('res===', res)
+        if (res == undefined) {
+          this.getData()
+        } else {
+          this.$message.success('操作成功!')
+          this.getData()
+        }
+      })
+      this.name = ""
+    },
+    postColumnSave () {
+      ColumnSave(this.form).then(res => {
+        this.$message.success('操作成功!')
+        //成功后，清除数据
+        this.form = {
+          user_nickname: '',
+          id: ''
+        }
+      })
+      this.getData()
+    },
     getData () {
       let _this = this
       this.loading = true
       UserList(this.query).then(res => {
-        console.log(res);
+        console.log('res', res);
         this.tableData = res.list;
         res.list.forEach((item) => {
           item.user_sex = item.user_sex == 0 ? '男' : '女'
-          item.user_status = item.user_status == 1 ? '正常' : '女'
+          item.user_status = item.user_status == 1 ? '正常' : '已禁用'
         })
         this.count = res.page_info.count
         this.loading = false
@@ -183,125 +213,37 @@ page_size: 10
       }).catch(function (error) {
         console.log('发生错误！', error);
         _this.loading = false
-
       })
     },
-    // 触发搜索按钮
-    handleSearch () {
-      this.$set(this.query, 'page', 1);
-      this.getData();
-    },
-    // 删除操作
-    handleDelete (index, row) {
-      // 二次确认删除
-      this.$confirm(`确定要删除ID序号为[${row.id}]的用户吗？`, '提示', {
-
-        type: 'warning'
-      })
-        .then(() => {
-          //这里去删除
-          this.loading = true
-          UserDel({ 'id[0]': row.id }).then(res => {
-            this.$message.success('删除成功')
-            this.getData()
-
-          })
-          //  UserDel(this)
-          
-        })
-        .catch(() => {
-          this.loading = false
-
-        });
-    },
-    // 多选操作
-    handleSelectionChange (val) {
-      this.multipleSelection = val;
-    },
-    delAllSelection () {
-
-      const length = this.multipleSelection.length;
-      let str = '';
-      this.delList = this.delList.concat(this.multipleSelection);
-      let id = {}
-      let DelIdView = []
-      for (let i = 0; i < length; i++) {
-        //获取用户名
-        id[`id[${i}]`] = this.multipleSelection[i].id   //难点，这里可以发一篇wenzhang
-        DelIdView.push(this.multipleSelection[i].id)
+    //单选多选都可删除
+    delAllSelection (row) {
+      //通过点击删除进来的 传入的参数必须为一个数组
+      if (row) {
+        this.DelId = [row[0].id]
       }
-
       // 二次确认删除
-      this.$confirm(`确定要删除ID序号为[${DelIdView}]的用户吗？`, '提示', {
+      this.$confirm(`确定要删除ID序号为[${this.DelId}]`, '提示', {
         type: 'warning'
       })
         .then(() => {
-          //这里去删除
           this.loading = true
-          UserDel(id).then(res => {
+          UserDel({ id: this.DelId }).then(res => {
             this.$message.success('删除成功');
             this.getData()
           })
-          //  UserDel(this)
-
         })
         .catch(() => {
           this.loading = false
-
         });
       this.multipleSelection = [];
 
-
-
     },
-    // 编辑操作
-    handleEdit (index, row) {
-      this.idx = index;
-      this.form = row;
-      this.editVisible = true;
-    },
-    // 保存编辑
-    saveEdit () {
-      this.editVisible = false;
-      this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-      this.$set(this.tableData, this.idx, this.form);
-    },
-    // 分页导航
-    handlePageChange (val) {
-      this.$set(this.query, 'page', val);
-      this.getData();
-    }
   }
 };
 </script>
 
 <style scoped>
-.handle-box {
-    margin-bottom: 20px;
-}
-
-.handle-select {
-    width: 120px;
-}
-
-.handle-input {
-    width: 300px;
-    display: inline-block;
-}
-.table {
-    width: 100%;
-    font-size: 14px;
-}
-.red {
-    color: #ff0000;
-}
-.mr10 {
-    margin-right: 10px;
-}
-.table-td-thumb {
-    display: block;
-    margin: auto;
-    width: 40px;
-    height: 40px;
-}
+/* @import "./../index.css"; */
+/* @import '../../../assets/css/user_index.css'; */
+@import '~@/assets/css/user_index.css';
 </style>

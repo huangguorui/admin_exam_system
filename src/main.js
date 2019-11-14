@@ -10,6 +10,10 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 
+//引入自己定义的组件
+import components from '@/utils/components.js'
+Vue.use(components)
+
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {

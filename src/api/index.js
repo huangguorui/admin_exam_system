@@ -95,9 +95,21 @@ export const ColumnDel = query => {
 
 
 
-
 /* column  栏目增删改查*/
 
+export const UserInfo = query => {
+    return request({
+        url: '/user/user-info',
+        method: 'get',
+        params: query
+    });
+};
+
+/* userlist*/
+
+// getUserInfo
+
+/* userlist*/
 
 // 试题列表
 

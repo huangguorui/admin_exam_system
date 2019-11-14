@@ -17,7 +17,7 @@ export default {
 
       },
       count: 0,   //总页数
-      isBtnDisable:true,  //全选按钮默认禁用
+      isBtnDisable: true,  //全选按钮默认禁用
     }
   },
   computed: {
@@ -27,10 +27,10 @@ export default {
     this.currentChange()
   },
   methods: {
-    customPageSize(){
-      this.query.page_size=50
+    customPageSize () {
+      this.query.page_size = 50
 
-    } ,   
+    },
 
     currentChange () {
       console.log(1)
@@ -42,10 +42,11 @@ export default {
     },
     // 多选操作
     handleSelectionChange (val) {
-      if(val.length==0){
-        this.isBtnDisable=true
-      }else{
-        this.isBtnDisable=false
+      console.log(val)
+      if (val.length == 0) {
+        this.isBtnDisable = true
+      } else {
+        this.isBtnDisable = false
 
       }
       this.DelId = []
