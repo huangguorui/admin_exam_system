@@ -16,7 +16,7 @@
                :show-close='false'
                :before-close="handleClose">
       <span>我来啦!</span>
-
+      <slot name="header">这里是头部</slot>
       <el-button @click="cancel">取消</el-button>
       <el-button @click="submit">确定</el-button>
     </el-drawer>
@@ -52,7 +52,7 @@ export default {
     },
     submit () {
       this.$emit('update:isDrawer', false)
-      this.$emit('applySubmit', { a: 1 });
+      this.$emit('applySubmit', this.forData);
 
     },
     handleClose (done) {

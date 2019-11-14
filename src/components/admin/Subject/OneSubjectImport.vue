@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i>  {{$route.meta.title}}
+          <i class="el-icon-lx-cascades"></i> {{$route.meta.title}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -189,7 +189,7 @@ export default {
     getSubjectList () {
       SubjectList().then(res => {
         this.subject = res.list
-        console.log('res', res);
+          ;
         this.subjectNumber = res.number
 
         // this.$message.success('操作成功');
@@ -199,7 +199,7 @@ export default {
     getColumnList () {
       ColumnList({ page_size: 50 }).then(res => {
         this.column = res.list
-        console.log('res', res);
+          ;
         // this.$message.success('操作成功');
 
       });
@@ -279,7 +279,7 @@ export default {
       }
       OneSubjectImport({ data: this.tableData }).then(res => {
 
-        console.log('res', res);
+        ;
         if (res == undefined) {
 
         } else {

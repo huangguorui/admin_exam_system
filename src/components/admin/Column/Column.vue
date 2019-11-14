@@ -72,7 +72,7 @@
             <el-button type="text"
                        icon="el-icon-delete"
                        class="red"
-                       @click="delAllSelection([scope.row])">删除</el-button>
+                       @click="delAllSelection(scope.row.id,'single')">删除</el-button>
 
           </template>
         </el-table-column>
@@ -144,22 +144,26 @@ export default {
       })
       this.name = ""
     },
-    postColumnSave () {
+    postEditSave () {
       ColumnSave(this.form).then(res => {
-        this.$message.success('操作成功!')
-        //成功后，清除数据
-        this.form = {
-          name: '',
-          id: ''
+        if (res != undefined) {
+          this.$message.success('添加成功');
+
+          this.form = {
+            name: '',
+            id: ''
+          }
+          this.getData()
         }
+        //成功后，清除数据
+
       })
-      this.getData()
     },
     getData () {
       let _this = this
       this.loading = true
       ColumnList(this.query).then(res => {
-        console.log('res', res);
+        ;
         this.tableData = res.list;
 
         this.count = res.page_info.count
@@ -171,10 +175,11 @@ export default {
       })
     },
     //单选多选都可删除
-    delAllSelection (row) {
+    delAllSelection (id, flag) {
       //通过点击删除进来的 传入的参数必须为一个数组
-      if (row) {
-        this.DelId = [row[0].id]
+      if (flag == 'single') {
+        this.DelId = [id]
+        console.log('id', id)
       }
       // 二次确认删除
       this.$confirm(`确定要删除ID序号为[${this.DelId}]`, '提示', {

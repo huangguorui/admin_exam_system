@@ -81,10 +81,29 @@
           <!--   @closeDraw="closeDraw"
                        @applySubmit="applySubmit"
                        :title="'新建练习题/修改练习题'" -->
-          <DrawerModel :for-data="list"
-                         @closeDraw="closeDraw"
-              @applySubmit="applySubmit"
-                       :isDrawer.sync="isShowDrawer"></DrawerModel>
+          <DrawerModel :for-data="formLabelAlign"
+                       @closeDraw="closeDraw"
+                       @applySubmit="applySubmit"
+                       :isDrawer.sync="isShowDrawer">
+            <template slot="header">
+
+              <el-form :rules="rules"
+                       ref="ruleForm"
+                       label-width="80px"
+                       :model="formLabelAlign">
+                <el-form-item label="名称">
+                  <el-input v-model="formLabelAlign.name"></el-input>
+                </el-form-item>
+                <el-form-item label="活动区域">
+                  <el-input v-model="formLabelAlign.region"></el-input>
+                </el-form-item>
+                <el-form-item label="活动形式">
+                  <el-input v-model="formLabelAlign.type"></el-input>
+                </el-form-item>
+              </el-form>
+
+            </template>
+          </DrawerModel>
           <el-button type="primary"
                      @click="submitForm('ruleForm')">立即创建用户</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -102,6 +121,11 @@ export default {
   name: 'UserAdd',
   data () {
     return {
+      formLabelAlign: {
+        name: '',
+        region: '',
+        type: ''
+      },
       list: {
         id: 1,
         text: '测试数据'
@@ -121,6 +145,10 @@ export default {
         user_sex: '',//用户性别
       },
       rules: {
+        name: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+        ],
         user_phone: [
           { required: true, message: '请输入电话号码', trigger: 'blur' },
           { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
@@ -170,13 +198,14 @@ export default {
     }
   },
   methods: {
-applySubmit(data){
-console.log('点击了开启',data)
-},
-closeDraw(data){
-console.log('点击了关闭',data)
+    applySubmit (data) {
 
-},
+      console.log('点击了开启', data)
+    },
+    closeDraw (data) {
+      console.log('点击了关闭', data)
+
+    },
     postUserSave () {
       UserInfo({ name: this.name }).then(res => {
         console.log('res===', res)
@@ -205,7 +234,7 @@ console.log('点击了关闭',data)
         if (valid) {
 
           UserSave(this.ruleForm).then(res => {
-            console.log('res', res);
+            ;
             this.$message.success('操作成功');
 
           });

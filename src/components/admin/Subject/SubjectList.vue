@@ -142,7 +142,7 @@ export default {
       })
       this.name = ""
     },
-    postColumnSave () {
+    postEditSave () {
       ColumnSave(this.form).then(res => {
         this.$message.success('操作成功!')
 
@@ -154,7 +154,7 @@ export default {
       let _this = this
       this.loading = true
       ColumnList(this.query).then(res => {
-        console.log('res', res);
+        ;
         this.tableData = res.list;
 
         this.count = res.page_info.count

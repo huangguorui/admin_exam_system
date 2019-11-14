@@ -33,7 +33,7 @@ export default {
     },
 
     currentChange () {
-      console.log(1)
+      // console.log(1)
     },
     // 分页导航
     handlePageChange (val) {
@@ -69,7 +69,7 @@ export default {
     // 保存编辑
     saveEdit () {
       this.editVisible = false;
-      this.postColumnSave()
+      this.postEditSave()
     },
     /*这里只有部分页面使用了*/
 
