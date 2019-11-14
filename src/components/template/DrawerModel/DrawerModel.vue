@@ -10,7 +10,7 @@
     {{forData}}
     <!-- :wrapperClosable="false" -->
 
-    <el-drawer title="我是标题"
+    <el-drawer :title="DrawerTitle"
                :visible.sync="isDrawer"
                :direction="direction"
                :show-close='false'
@@ -36,6 +36,10 @@ export default {
     forData: {
       type: Object,
       default: 'default'
+    },
+     DrawerTitle: {
+      type: String,
+      default: '默认标题'
     }
   },
   data () {
@@ -51,8 +55,7 @@ export default {
       this.$emit('closeDraw', { a: 1 });
     },
     submit () {
-      this.$emit('update:isDrawer', false)
-      this.$emit('applySubmit', this.forData);
+      this.$emit('applySubmit', this.forData, 'formLabelAlign');
 
     },
     handleClose (done) {

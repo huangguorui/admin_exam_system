@@ -83,23 +83,29 @@
                        :title="'新建练习题/修改练习题'" -->
           <DrawerModel :for-data="formLabelAlign"
                        @closeDraw="closeDraw"
+                       DrawerTitle="请添加数据"
                        @applySubmit="applySubmit"
                        :isDrawer.sync="isShowDrawer">
             <template slot="header">
 
-              <el-form :rules="rules"
-                       ref="ruleForm"
+              <el-form :rules="rulesTwo"
                        label-width="80px"
+                       ref="formLabelAlign"
                        :model="formLabelAlign">
-                <el-form-item label="名称">
+
+                <el-form-item label="名称"
+                              prop="name">
                   <el-input v-model="formLabelAlign.name"></el-input>
                 </el-form-item>
-                <el-form-item label="活动区域">
+                <el-form-item label="活动区域"
+                              prop="name">
                   <el-input v-model="formLabelAlign.region"></el-input>
                 </el-form-item>
-                <el-form-item label="活动形式">
+                <el-form-item label="活动形式"
+                              prop="type">
                   <el-input v-model="formLabelAlign.type"></el-input>
                 </el-form-item>
+
               </el-form>
 
             </template>
@@ -132,6 +138,20 @@ export default {
       },
       isShowDrawer: false,
       id: '',
+      rulesTwo: {
+        name: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+        ],
+        region: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '请输入电话号码', trigger: 'blur' },
+          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+        ],
+      },
       ruleForm: {
         user_phone: '',//用户电话
         user_img: '',//用户头像
@@ -145,10 +165,7 @@ export default {
         user_sex: '',//用户性别
       },
       rules: {
-        name: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
-        ],
+
         user_phone: [
           { required: true, message: '请输入电话号码', trigger: 'blur' },
           { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
@@ -198,8 +215,17 @@ export default {
     }
   },
   methods: {
-    applySubmit (data) {
-
+    applySubmit (data, formName) {
+      console.log('formName=', formName)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!');
+          this.isShowDrawer = false
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
       console.log('点击了开启', data)
     },
     closeDraw (data) {
@@ -230,6 +256,7 @@ export default {
       })
     },
     submitForm (formName) {
+      // console.log('formName',formName)
       this.$refs[formName].validate((valid) => {
         if (valid) {
 

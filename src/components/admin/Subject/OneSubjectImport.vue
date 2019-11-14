@@ -12,7 +12,7 @@
 
         <el-divider content-position="left">将没有栏目的考卷和栏目进行关联</el-divider>
 
-        {{subjectNumber}}
+        <!-- {{subjectNumber}} -->
 
         <el-select v-model="link.route"
                    placeholder="请选择未选择栏目的考卷">
@@ -23,6 +23,7 @@
         </el-select>
         <!-- 栏目名  栏目名id要传到后台 -->
         <el-select v-model="link.column_id"
+        style="margin:0 20px"
                    placeholder="请选择栏目">
           <el-option :label="item.name"
                      :value="item.id"
@@ -35,7 +36,9 @@
                   placeholder="试卷标题"></el-input>
 
         <el-button type="primary"
-                   @click="postLink">点击建立连接</el-button>
+        style="margin:0 20px"
+
+                   @click="postLink">点击建立关联</el-button>
 
         <el-divider></el-divider>
 
@@ -83,12 +86,12 @@
                   stripe
                   style="width: 100%;margin-top:30px">
 
-          <el-table-column prop="route"
+          <!-- <el-table-column prop="route"
                            label="试卷序列ID">
           </el-table-column>
           <el-table-column prop="subject_name_id"
                            label="试卷名称【ID】">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="type"
                            label="试题属性">
           </el-table-column>
