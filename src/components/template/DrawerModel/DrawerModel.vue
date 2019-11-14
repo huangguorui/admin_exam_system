@@ -48,12 +48,10 @@ export default {
   methods: {
     cancel () {
       this.$emit('update:isDrawer', false)
-
       this.$emit('closeDraw', { a: 1 });
     },
     submit () {
       this.$emit('update:isDrawer', false)
-
       this.$emit('applySubmit', { a: 1 });
 
     },
