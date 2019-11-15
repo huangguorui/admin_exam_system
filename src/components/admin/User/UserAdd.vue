@@ -22,13 +22,13 @@
 
           <el-form-item label="用户电话"
                         prop="user_phone">
-            <el-input v-model="ruleForm.user_phone"></el-input>
+            <el-input v-model.number="ruleForm.user_phone"></el-input>
           </el-form-item>
 
           <el-form-item label="用户头像"
                         prop="user_img">
 
-            <el-upload class="upload-demo"
+            <!-- <el-upload class="upload-demo"
                        drag
                        action="//www.vuecli.com/api/user/user-photo"
                        multiple>
@@ -36,7 +36,7 @@
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               <div class="el-upload__tip"
                    slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
+            </el-upload> -->
 
             <!-- <el-input v-model="ruleForm.user_img"></el-input> -->
           </el-form-item>
@@ -53,6 +53,16 @@
                         prop="user_username">
             <el-input v-model="ruleForm.user_username"></el-input>
           </el-form-item>
+          <!-- @on-change="ruleForm.user_birthday=$event" -->
+
+          <el-form-item label="用户生日"
+                        prop="user_birthday">
+            <el-date-picker v-model="ruleForm.user_birthday"
+                            type="date"
+                            @on-change="ruleForm.user_birthday=$event"
+                            placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
 
           <el-form-item label="用户密码"
                         prop="user_pwd">
@@ -64,7 +74,7 @@
           </el-form-item>
           <el-form-item label="用户积分"
                         prop="user_integral">
-            <el-input v-model="ruleForm.user_integral"></el-input>
+            <el-input v-model.number="ruleForm.user_integral"></el-input>
           </el-form-item>
 
           <el-form-item label="用户性别"
@@ -88,26 +98,13 @@
                        :isDrawer.sync="isShowDrawer">
             <template slot="header">
 
-              <el-form :rules="rulesTwo"
-                       label-width="80px"
+              <el-form :model="formLabelAlign"
+                       :rules="rulesTwo"
                        ref="formLabelAlign"
-                       :model="formLabelAlign">
-
-                <el-form-item label="名称"
-                              prop="name">
-                  <el-input v-model="formLabelAlign.name"></el-input>
-                </el-form-item>
-                <el-form-item label="活动区域"
-                              prop="name">
-                  <el-input v-model="formLabelAlign.region"></el-input>
-                </el-form-item>
-                <el-form-item label="活动形式"
-                              prop="type">
-                  <el-input v-model="formLabelAlign.type"></el-input>
-                </el-form-item>
+                       label-width="100px"
+                       class="demo-formLabelAlign">
 
               </el-form>
-
             </template>
           </DrawerModel>
           <el-button type="primary"
@@ -139,67 +136,57 @@ export default {
       isShowDrawer: false,
       id: '',
       rulesTwo: {
-        name: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
-        ],
-        region: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
-        ],
-        type: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
-        ],
+
+
       },
       ruleForm: {
-        user_phone: '',//用户电话
+        user_phone: 15555555555,//用户电话
         user_img: '',//用户头像
-        user_mailbox: '',//用户邮箱
-        user_nickname: '',//用户昵称
-        user_username: '',//用户真实姓名
+        user_mailbox: '2315684325@qq.com',//用户邮箱
+        user_nickname: '一天天天天天的',//用户昵称
+        user_username: '张三',//用户真实姓名
         user_birthday: '',//用户生日
-        user_pwd: '',//用户密码
+        user_pwd: '12345678912',//用户密码
         user_vip: '',//用户vip等级
-        user_integral: '',//用户积分
-        user_sex: '',//用户性别
+        user_integral: 66666666,//用户积分
+        user_sex: '男',//用户性别
       },
       rules: {
 
         user_phone: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' }
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { type: 'number', message: '手机号码必须为数字值' },
+          // { min: 1, max: 5, message: '长度在 5 到 11 个字符', trigger: 'blur' },
         ],
         user_mailbox: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         user_nickname: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { required: true, message: '请输入用户昵称', trigger: 'change' },
+          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
+
         ],
         user_username: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }, ,
+          { required: true, message: '请输入用户昵称', trigger: 'change' }
         ],
         user_birthday: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
-        ],
-
-        user_birthday: [
-          { type: 'date', required: true, message: '请选择你的生日', trigger: 'change' }
+          { type: 'date', required: true, required: true, message: '请选择用户生日', trigger: 'change' }
         ],
         user_pwd: [
-          { type: 'date', required: true, message: '请输入密码', trigger: 'change' }
+          { required: true, message: '请输入密码', trigger: 'change' },
+          { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' }, ,
         ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-        ],
-        user_vip: [
-          { required: true, message: '请输入用户VIP等级', trigger: 'change' }
-        ],
+        // user_vip: [
+        //   { required: true, message: '请输入用户VIP等级', trigger: 'change' }
+        // ],
         user_integral: [
-          { required: true, message: '请输入用户积分', trigger: 'blur' }
+          { required: true, message: '请输入用户积分', trigger: 'blur' },
+          { type: 'number', message: '积分必须为数字值' },
         ],
         user_sex: [
-          { required: true, message: '请输入用户性别', trigger: 'change' }
+          { required: true, message: '请输入用户性别', trigger: 'change' },
         ],
 
       }
@@ -245,18 +232,26 @@ export default {
       // this.name = ""
     },
     getUserInfo () {
-      UserInfo({ id: this.id }).then(res => {
-        console.log('res===', res)
-        if (res == undefined) {
-          this.getData()
-        } else {
-          this.$message.success('操作成功!')
-          this.getData()
-        }
-      })
+      // UserInfo({ id: this.id }).then(res => {
+      //   console.log('res===', res)
+      //   if (res == undefined) {
+      //     this.getData()
+      //   } else {
+      //     this.$message.success('操作成功!')
+      //     this.getData()
+      //   }
+      // })
+    },
+    dateConversion (value) {
+      console.log('value', value)
+      var d = new Date(value);
+      var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+      return date;
     },
     submitForm (formName) {
       // console.log('formName',formName)
+      console.log(this.ruleForm.user_birthday)
+      this.ruleForm.user_birthday = this.dateConversion(this.ruleForm.user_birthday)
       this.$refs[formName].validate((valid) => {
         if (valid) {
 
