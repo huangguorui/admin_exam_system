@@ -23,7 +23,7 @@
         </el-select>
         <!-- 栏目名  栏目名id要传到后台 -->
         <el-select v-model="link.column_id"
-        style="margin:0 20px"
+                   style="margin:0 20px"
                    placeholder="请选择栏目">
           <el-option :label="item.name"
                      :value="item.id"
@@ -36,8 +36,7 @@
                   placeholder="试卷标题"></el-input>
 
         <el-button type="primary"
-        style="margin:0 20px"
-
+                   style="margin:0 20px"
                    @click="postLink">点击建立关联</el-button>
 
         <el-divider></el-divider>
@@ -73,13 +72,29 @@
 
         </el-table> -->
         <el-divider content-position="left">试卷提交</el-divider>
-        <span> 请选择文件进行上传吧！</span>
-        <input type="file"
-               id="excel-file"
-               @change="addData($event)"
-               ref="dataFile">
+        {{isFile}}
+
+        <div class="file"
+             v-if="isFile">
+          <span> 333请选择文件进行上传吧！</span>
+          <input type="file"
+                 id="excel-file"
+                 @change="addData($event)"
+                 ref="dataFile">
+
+        </div>
+        <div class="file"
+             v-if="!isFile">
+          <span> 666-请选择文件进行上传吧！</span>
+          <input type="file"
+                 id="excel-file"
+                 @change="addData($event)"
+                 ref="dataFile">
+
+        </div>
+
         <el-button type="primary"
-                   @click="postList">立即上传试卷</el-button>
+                   @click="postList(($event))">立即上传试卷</el-button>
         <el-divider></el-divider>
 
         <el-table :data="tableData"
@@ -127,6 +142,8 @@
 </template>
 
 <script>
+import $ from 'jquery'
+
 import XLSX from 'xlsx';
 import { OneSubjectImport, ColumnList, SubjectList, Relation } from '@/api/index';
 
@@ -134,6 +151,7 @@ export default {
   name: 'basetable',
   data () {
     return {
+      isFile: false,
       link: {
         column_id: '', //栏目id
         name: '', //当前试题名
@@ -151,7 +169,6 @@ export default {
           id: '0',
           name: '栏目'
         },
-
       ],
       tableData: [
         // {
@@ -180,46 +197,33 @@ export default {
         // }
       ]
     }
-
   },
   created () {
     this.getColumnList()   //获取栏目
     this.getSubjectList() //获取考试列表以及没有添加栏目的试题
   },
   methods: {
-
-
     getSubjectList () {
       SubjectList().then(res => {
         this.subject = res.list
-          ;
         this.subjectNumber = res.number
-
-        // this.$message.success('操作成功');
-
+        // this.active.success()
       });
     },
     getColumnList () {
       ColumnList({ page_size: 50 }).then(res => {
         this.column = res.list
-          ;
-        // this.$message.success('操作成功');
-
+        // this.active.success()
       });
     },
     postLink () {
-
-
       //Relation
       Relation(this.link).then(res => {
         if (res == undefined) {
-
         } else {
           this.$message.success('关联成功!')
-
         }
-
-        // this.$message.success('操作成功');
+        // this.active.success()
 
       });
       this.link = {
@@ -232,6 +236,7 @@ export default {
     addData (e) {
       let _this = this
       var files = e.target.files;
+      console.log(' e.target.files', e.target.files)
       var fileReader = new FileReader();
       fileReader.onload = function (ev) {
         console.log('ev', ev)
@@ -274,19 +279,35 @@ export default {
       // 以二进制方式打开文件
       fileReader.readAsBinaryString(files[0]);
 
+      //console.log('files',files[0].name)
     },
-    postList () {
+    postList (e) {
+
       if (this.tableData.length == 0) {
         this.$message.error('请添加试卷后在点击上传')
         return false;
       }
       OneSubjectImport({ data: this.tableData }).then(res => {
 
-        ;
         if (res == undefined) {
 
         } else {
-          this.$message.success('添加成功');
+          this.active.success()
+          console.log(e)
+          //  $('.file input').remove()
+
+          // setTimeout(() => {
+          //   $('.file').append(` <input type="file"
+          //        id="excel-file"
+          //        @change="addData($event)"
+          //        ref="dataFile">`)
+          // }, 3000)
+
+          setTimeout(() => {
+            this.isFile = !this.isFile
+          }, 3000)
+          var obj = document.getElementById('excel-file');
+          obj.outerHTML = obj.outerHTML;
           this.getSubjectList()
         }
 

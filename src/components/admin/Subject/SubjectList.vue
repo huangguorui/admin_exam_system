@@ -14,30 +14,18 @@
                    class="handle-del mr10"
                    :disabled="isBtnDisable"
                    @click="delAllSelection">批量删除</el-button>
-        <!-- <el-select v-model="query.address"
-                   placeholder="地址"
-                   class="handle-select mr10">
-          <el-option key="1"
-                     label="广东省"
-                     value="广东省"></el-option>
-          <el-option key="2"
-                     label="湖南省"
-                     value="湖南省"></el-option>
-        </el-select> -->
         <el-input v-model="query.search"
-                  placeholder="请输入栏目名"
+                  clearable
+                  @input="handleSearch"
+                  placeholder="请输入试卷名"
                   style="width:200px"
                   class="handle-input mr10"></el-input>
+
         <el-button type="primary"
                    icon="el-icon-search"
                    @click="handleSearch">搜索</el-button>
-        <el-input v-model="name"
-                  style="margin-left:10px;width:200px"
-                  placeholder="请输入需要添加的栏目名"
-                  class="handle-input mr10"></el-input>
-        <!-- icon="el-icon-search" -->
-        <el-button type="primary"
-                   @click="addColumn">点击添加栏目</el-button>
+        <!-- <el-button type="primary"
+                   @click="add">添加试题</el-button> -->
       </div>
       <el-table :data="tableData"
                 v-loading="loading"
@@ -53,21 +41,30 @@
                          label="ID"
                          width="55"
                          align="center"></el-table-column>
-        <el-table-column prop="name"
+        <el-table-column prop="columnName"
                          label="栏目名称"></el-table-column>
+        <el-table-column prop="subjectName"
+                         label="试卷名称"></el-table-column>
 
         </el-table-column>
+
         <el-table-column label="操作"
                          width="180"
                          align="center">
           <template slot-scope="scope">
             <el-button type="text"
                        icon="el-icon-edit"
-                       @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                       @click="edlt(scope.row)">编辑</el-button>
+            <!-- <el-button type="text"
+                       icon="el-icon-delete"
+                       class="red"
+                       @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+
             <el-button type="text"
                        icon="el-icon-delete"
                        class="red"
-                       @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                       @click="delAllSelection(scope.row.subjectNameId,'single')">删除</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -81,25 +78,26 @@
       </div>
     </div>
 
-    <!-- 编辑弹出框 -->
-    <el-dialog title="编辑"
-               :visible.sync="editVisible"
-               width="30%">
-      <el-form ref="form"
-               :model="form"
-               label-width="70px">
-        <el-form-item label="用户名">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
+    <DrawerModel :for-data="formData"
+                 @closeDraw="closeDraw"
+                 :drawerTitle="drawerTitle "
+                 @applySubmit="applySubmit"
+                 :isDrawer.sync="isShowDrawer">
+      <template slot="header">
+        <el-form :model="formData"
+                 :rules="rules"
+                 ref="formData"
+                 label-width="100px"
+                 class="demo-formData">
 
-      </el-form>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="editVisible = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="saveEdit">确 定</el-button>
-      </span>
-    </el-dialog>
+          <el-form-item label="栏目名称"
+                        prop="name">
+            <el-input v-model="formData.name"></el-input>
+          </el-form-item>
+
+        </el-form>
+      </template>
+    </DrawerModel>
   </div>
 </template>
 
@@ -107,94 +105,96 @@
 import interList from '@/common/mixins/list'
 import set from '@/common/mixins/set'
 
-import { ColumnSave, ColumnDel, ColumnList } from '../../../api/index';
+import { ExamSave, ExamDel, ExamList } from '../../../api/index';
 export default {
   name: 'Column',
   data () {
     return {
-      name: '',
-      tableData: [],
-      delList: [],
-      editVisible: false,
-      form: {  //存放删除的数
+      drawerTitle: '添加栏目名称',
+      isShowDrawer: false,
+      name: '',  //栏目名
+      formData: {
         name: '',
         id: ''
-      },
+      },//表单数据
+      tableData: [], //当前表数据
+      editVisible: false, //弹框删除
+      rules: {
+        name: [
+          { required: true, message: '试卷标题不能为空', trigger: 'blur' },
+        ],
+      }
     };
   },
   mixins: [interList],
-
   created () {
     this.getData();
   },
   methods: {
-    addColumn () {
-      ColumnSave({ name: this.name }).then(res => {
-        console.log('res===', res)
-        if (res == undefined) {
-          this.getData()
-
+    //添加数据
+    add () {
+      this.formData = {}
+      this.isShowDrawer = true
+    },
+    //编辑数据
+    edlt (row) {
+      this.drawerTitle = '编辑试卷标题'
+      row.name = row.subjectName
+      console.log('row', row)
+      this.formData = Object.assign({}, row)
+      this.isShowDrawer = true
+    },
+    applySubmit (data, formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.formData = {}
+          console.log('datadatadata', data)
+          ExamSave(data).then(res => {
+            console.log(data)
+            if (res == undefined) {
+              this.getData()
+            } else {
+              this.active.success()
+              this.getData()
+            }
+          })
+          this.isShowDrawer = false
         } else {
-          this.$message.success('操作成功!')
-          this.getData()
-
+          return false;
         }
-      })
-      this.name = ""
+      });
     },
-    postEditSave () {
-      ColumnSave(this.form).then(res => {
-        this.$message.success('操作成功!')
+    closeDraw (data) {
 
-      })
-      this.getData()
     },
-    // 获取 easy-mock 的模拟数据
     getData () {
       let _this = this
       this.loading = true
-      ColumnList(this.query).then(res => {
-        ;
+      ExamList(this.query).then(res => {
         this.tableData = res.list;
-
         this.count = res.page_info.count
         this.loading = false
 
       }).catch(function (error) {
-        console.log('发生错误！', error);
+        this.active.error()
         _this.loading = false
-
       })
     },
-    // 删除操作
-    handleDelete (index, row) {
-      // 二次确认删除
-      this.$confirm(`确定要删除ID序号为[${row.id}]`, '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          //这里去删除
-          this.loading = true
-          ColumnDel({ 'id[0]': row.id }).then(res => {
-            this.$message.success('删除成功')
-            this.getData()
-          })
-        })
-        .catch(() => {
-          this.loading = false
-
-        });
-    },
-
-    delAllSelection () {
+    //单选多选都可删除
+    delAllSelection (id, flag) {
+      //通过点击删除进来的 传入的参数必须为一个数组
+      if (flag == 'single') {
+        this.DelId = [id]
+        console.log('this.DelId', this.DelId)
+      }
       // 二次确认删除
       this.$confirm(`确定要删除ID序号为[${this.DelId}]`, '提示', {
         type: 'warning'
       })
         .then(() => {
           this.loading = true
-          ColumnDel({ id: this.DelId }).then(res => {
-            this.$message.success('删除成功');
+          ExamDel({ id: this.DelId }).then(res => {
+            this.active.success()
             this.getData()
           })
         })
@@ -202,40 +202,11 @@ export default {
           this.loading = false
         });
       this.multipleSelection = [];
-
     },
-
   }
 };
 </script>
 
 <style scoped>
-.handle-box {
-    margin-bottom: 20px;
-}
-
-.handle-select {
-    width: 120px;
-}
-
-.handle-input {
-    width: 300px;
-    display: inline-block;
-}
-.table {
-    width: 100%;
-    font-size: 14px;
-}
-.red {
-    color: #ff0000;
-}
-.mr10 {
-    margin-right: 10px;
-}
-.table-td-thumb {
-    display: block;
-    margin: auto;
-    width: 40px;
-    height: 40px;
-}
+@import '~@/assets/css/user_index.css';
 </style>

@@ -147,7 +147,7 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    this.$message.success('删除成功');
+                    this.active.success()
                     this.tableData.splice(index, 1);
                 })
                 .catch(() => {});

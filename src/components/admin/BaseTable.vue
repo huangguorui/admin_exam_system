@@ -108,8 +108,8 @@
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="editVisible = false">取 消</el-button>
-        <el-button type="primary"
-                   @click="saveEdit">确 定</el-button>
+        <!-- <el-button type="primary"
+                   @click="saveEdit">确 定</el-button> -->
       </span>
     </el-dialog>
   </div>
@@ -161,7 +161,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.$message.success('删除成功');
+          this.active.success()
           this.tableData.splice(index, 1);
         })
         .catch(() => { });

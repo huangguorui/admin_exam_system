@@ -123,6 +123,44 @@ export const SubjectList = query => {
     });
 };
 
+//postExamSave
+//试卷名称修改
+export const ExamSave = query => {
+    return request({
+        url: '/subject/exam-save',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+//试卷删除
+export const ExamDel = query => {
+    return request({
+        url: '/subject/exam-del',
+        method: 'get',
+        params: query
+
+    });
+};
+
+// export const SubjectList = query => {
+//     return request({
+//         url: '/subject/subject-list',
+//         method: 'get',
+//         params: query
+
+//     });
+// };
+
+export const ExamList = query => {
+    return request({
+        url: '/subject/exam-list',
+        method: 'get',
+        params: query
+
+    });
+};
+
 
 
 /**

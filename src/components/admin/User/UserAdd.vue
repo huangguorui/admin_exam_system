@@ -87,26 +87,9 @@
                          value="1"></el-option>
             </el-select>
           </el-form-item>
-          <el-button @click="isShowDrawer=true">点击弹框</el-button>
           <!--   @closeDraw="closeDraw"
                        @applySubmit="applySubmit"
                        :title="'新建练习题/修改练习题'" -->
-          <DrawerModel :for-data="formLabelAlign"
-                       @closeDraw="closeDraw"
-                       DrawerTitle="请添加数据"
-                       @applySubmit="applySubmit"
-                       :isDrawer.sync="isShowDrawer">
-            <template slot="header">
-
-              <el-form :model="formLabelAlign"
-                       :rules="rulesTwo"
-                       ref="formLabelAlign"
-                       label-width="100px"
-                       class="demo-formLabelAlign">
-
-              </el-form>
-            </template>
-          </DrawerModel>
           <el-button type="primary"
                      @click="submitForm('ruleForm')">立即创建用户</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -124,35 +107,21 @@ export default {
   name: 'UserAdd',
   data () {
     return {
-      formLabelAlign: {
-        name: '',
-        region: '',
-        type: ''
-      },
-      list: {
-        id: 1,
-        text: '测试数据'
-      },
       isShowDrawer: false,
       id: '',
-      rulesTwo: {
-
-
-      },
       ruleForm: {
-        user_phone: 15555555555,//用户电话
+        user_phone: '',//用户电话
         user_img: '',//用户头像
-        user_mailbox: '2315684325@qq.com',//用户邮箱
-        user_nickname: '一天天天天天的',//用户昵称
-        user_username: '张三',//用户真实姓名
+        user_nickname: '',//用户昵称
+        user_username: '',//用户真实姓名
         user_birthday: '',//用户生日
-        user_pwd: '12345678912',//用户密码
+        user_pwd: '',//用户密码
         user_vip: '',//用户vip等级
-        user_integral: 66666666,//用户积分
-        user_sex: '男',//用户性别
+        user_integral: '',//用户积分
+        user_sex: '',//用户性别 
+
       },
       rules: {
-
         user_phone: [
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
           { type: 'number', message: '手机号码必须为数字值' },
@@ -160,22 +129,22 @@ export default {
         ],
         user_mailbox: [
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
         ],
         user_nickname: [
-          { required: true, message: '请输入用户昵称', trigger: 'change' },
+          { required: true, message: '请输入用户昵称', trigger: 'blur' },
           { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
 
         ],
         user_username: [
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }, ,
-          { required: true, message: '请输入用户昵称', trigger: 'change' }
+          { required: true, message: '请输入用户真实姓名', trigger: 'blur' }
         ],
         user_birthday: [
-          { type: 'date', required: true, required: true, message: '请选择用户生日', trigger: 'change' }
+          { type: 'date', required: true, required: true, message: '请选择用户生日', trigger: 'blur' }
         ],
         user_pwd: [
-          { required: true, message: '请输入密码', trigger: 'change' },
+          { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' }, ,
         ],
         // user_vip: [
@@ -186,7 +155,7 @@ export default {
           { type: 'number', message: '积分必须为数字值' },
         ],
         user_sex: [
-          { required: true, message: '请输入用户性别', trigger: 'change' },
+          { required: true, message: '请输入用户性别', trigger: 'blur' },
         ],
 
       }
@@ -194,91 +163,42 @@ export default {
   },
   created () {
 
-    console.log(this.$route.query.id)
-    if (this.$route.query.id) {
-      this.id = this.$route.query.id
-      this.getUserInfo()
-      console.log('执行该函数')
-    }
   },
   methods: {
-    applySubmit (data, formName) {
-      console.log('formName=', formName)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-          this.isShowDrawer = false
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-      console.log('点击了开启', data)
-    },
-    closeDraw (data) {
-      console.log('点击了关闭', data)
-
-    },
-    postUserSave () {
-      UserInfo({ name: this.name }).then(res => {
-        console.log('res===', res)
-        if (res == undefined) {
-          this.getData()
-        } else {
-          this.$message.success('操作成功!')
-          this.getData()
-        }
-      })
-      // this.name = ""
-    },
-    getUserInfo () {
-      // UserInfo({ id: this.id }).then(res => {
-      //   console.log('res===', res)
-      //   if (res == undefined) {
-      //     this.getData()
-      //   } else {
-      //     this.$message.success('操作成功!')
-      //     this.getData()
-      //   }
-      // })
-    },
-    dateConversion (value) {
-      console.log('value', value)
-      var d = new Date(value);
-      var date = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
-      return date;
-    },
     submitForm (formName) {
       // console.log('formName',formName)
       console.log(this.ruleForm.user_birthday)
-      this.ruleForm.user_birthday = this.dateConversion(this.ruleForm.user_birthday)
+      // this.ruleForm.user_birthday = this.dateConversion(this.ruleForm.user_birthday)
+
       this.$refs[formName].validate((valid) => {
         if (valid) {
-
           UserSave(this.ruleForm).then(res => {
-            ;
-            this.$message.success('操作成功');
-
+            this.active.success()
+            this.ruleForm = {}
+            this.active.success()
           });
-
-          //重置操作
-          this.ruleForm = {
-            user_phone: '',//用户电话
-            user_img: '',//用户头像
-            user_nickname: '',//用户昵称
-            user_username: '',//用户真实姓名
-            user_birthday: '',//用户生日
-            user_pwd: '',//用户密码
-            user_vip: '',//用户vip等级
-            user_integral: '',//用户积分
-            user_sex: '',//用户性别
-          }
-
         } else {
           console.log('error submit!!');
           return false;
         }
       });
+      //重置操作
+
+      // this.ruleForm = {
+      //   user_phone: '',//用户电话
+      //   user_img: '',//用户头像
+      //   user_nickname: '',//用户昵称
+      //   user_username: '',//用户真实姓名
+      //   user_birthday: '',//用户生日
+      //   user_pwd: '',//用户密码
+      //   user_vip: '',//用户vip等级
+      //   user_integral: '',//用户积分
+      //   user_sex: '',//用户性别
+      // }
+
+
+
+
     },
     resetForm (formName) {
       this.$refs[formName].resetFields();

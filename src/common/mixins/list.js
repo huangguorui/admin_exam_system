@@ -57,23 +57,10 @@ export default {
     },
     // 触发搜索按钮
     handleSearch () {
+      console.log(this.query)
       this.$set(this.query, 'page', 1);
       this.getData();
     },
-    /*这里只有部分页面使用了*/
-    // 编辑操作
-    handleEdit (index, row) {
-      this.form = Object.assign({}, row)
-      this.editVisible = true;
-    },
-    // 保存编辑
-    saveEdit () {
-      this.editVisible = false;
-      this.postEditSave()
-    },
-    /*这里只有部分页面使用了*/
-
-
 
     // currentChange () {
     //   // 获取列表
