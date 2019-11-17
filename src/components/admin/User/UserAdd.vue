@@ -133,7 +133,7 @@ export default {
         ],
         user_nickname: [
           { required: true, message: '请输入用户昵称', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
+          { min: 3, max: 11, message: '长度在 3 到 11 个字符', trigger: 'blur' },
 
         ],
         user_username: [

@@ -72,7 +72,7 @@
 
         </el-table> -->
         <el-divider content-position="left">试卷提交</el-divider>
-        {{isFile}}
+        <!-- {{isFile}} -->
 
         <div class="file"
              v-if="isFile">
@@ -85,14 +85,13 @@
         </div>
         <div class="file"
              v-if="!isFile">
-          <span> 666-请选择文件进行上传吧！</span>
+          <span> 请选择文件进行上传吧！</span>
           <input type="file"
                  id="excel-file"
                  @change="addData($event)"
                  ref="dataFile">
 
         </div>
-
         <el-button type="primary"
                    @click="postList(($event))">立即上传试卷</el-button>
         <el-divider></el-divider>

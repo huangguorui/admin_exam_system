@@ -163,7 +163,6 @@ slot="tip">只能上传jpg/png文件，且不超过500kb</div>
                         prop="user_birthday">
             <el-date-picker v-model="formData.user_birthday"
                             type="date"
-                            @on-change="formData.user_birthday=$event"
                             placeholder="选择日期">
             </el-date-picker>
           </el-form-item>
@@ -233,7 +232,7 @@ export default {
       rules: {
 
         user_phone: [
-          { type: 'number', message: '手机号码必须为数字值' },
+          // { type: 'number', message: '手机号码必须为数字值' },
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
 
           // { min: 1, max: 5, message: '长度在 5 到 11 个字符', trigger: 'blur' },
@@ -244,7 +243,7 @@ export default {
         ],
         user_nickname: [
           { required: true, message: '请输入用户昵称', trigger: 'blur' },
-          { min: 5, max: 11, message: '长度在 5 到 11 个字符', trigger: 'blur' },
+          { min: 3, max: 11, message: '长度在 3 到 11 个字符', trigger: 'blur' },
 
         ],
         user_username: [
@@ -252,7 +251,7 @@ export default {
           { required: true, message: '请输入用户真实姓名', trigger: 'blur' }
         ],
         user_birthday: [
-          { type: 'date', required: true, required: true, message: '请选择用户生日', trigger: 'blur' }
+          { type: 'date', required: true, message: '请选择用户生日', trigger: 'blur' }
         ],
         user_pwd: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -294,9 +293,11 @@ export default {
     applySubmit (data, formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.formData = {}
+
 
           UserSave(data).then(res => {
+            //清空数据
+            this.$refs[formName].resetFields()
             if (res == undefined) {
               this.getData()
             } else {
@@ -305,9 +306,12 @@ export default {
             }
           })
           this.isShowDrawer = false
+
         } else {
           return false;
         }
+
+
       });
     },
     closeDraw (data) {

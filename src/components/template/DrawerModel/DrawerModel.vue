@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{forData}}
+    <!-- {{forData}} -->
     <!-- :wrapperClosable="false" -->
 
     <el-drawer :title="drawerTitle"

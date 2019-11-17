@@ -38,8 +38,6 @@ import qs from 'qs'
 //excel导入
 export const OneSubjectImport = query => {
 
-    console.log('qs', qs)
-    console.log('query', query)
     return request({
         url: '/link/add-list',
         method: 'post',
