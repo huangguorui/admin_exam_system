@@ -159,6 +159,38 @@ export const ExamList = query => {
     });
 };
 
+//用户vip等级列表
+
+export const UserVipList = query => {
+    return request({
+        url: '/user/user-vip-list',
+        method: 'get',
+        params: query
+
+    });
+};
+
+export const UserVipSave = query => {
+    return request({
+        url: '/user/user-vip-save',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+
+export const UserVipDel = query => {
+    return request({
+        url: '/user/user-vip-del',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+
+
+
+
 
 
 /**

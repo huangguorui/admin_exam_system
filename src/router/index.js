@@ -65,6 +65,25 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "table" */ '../components/admin/Column/Column.vue'),
                     meta: { title: '栏目列表' }
                 },
+                //管理员列表
+                {
+                    path: '/AdministratorsList',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/Administrators/AdministratorsList.vue'),
+                    meta: { title: '管理员列表' }
+                },
+                //管理员添加
+
+                {
+                    path: '/AdministratorsAdd',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/Administrators/AdministratorsList.vue'),
+                    meta: { title: '管理员添加' }
+                },
+                {
+                    path: '/UserVip',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/UserVip/UserVip.vue'),
+                    meta: { title: 'Vip等级管理' }
+                },
+
                 //
                 /*
                 所有考生的考试成绩

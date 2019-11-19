@@ -61,6 +61,23 @@ export default {
           title: '基础表格'
         },
         {
+          icon: 'el-icon-lx-calendar',
+          index: 'fsdafad',
+          title: '管理员管理',
+          subs: [
+            {
+              index: 'AdministratorsAdd',
+              title: '管理员添加'
+            },
+            {
+              index: 'AdministratorsList',
+              title: '管理员列表'
+            },
+
+          ]
+        },
+
+        {
           icon: 'el-icon-lx-copy',
           index: 'tabs',
           title: '用户管理',
@@ -112,12 +129,21 @@ export default {
           index: 'Column',
           title: '栏目管理'
         },
-
+        {
+          icon: 'el-icon-lx-copy',
+          index: 'UserVip',
+          title: 'Vip等级管理'
+        },
         {
           icon: 'el-icon-lx-copy',
           index: 'UserOpinion',
           title: '用户意见'
         },
+
+
+
+
+
         // {
         //   icon: 'el-icon-lx-copy',
         //   index: 'SystemNotice',
