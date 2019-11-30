@@ -37,18 +37,13 @@
         <el-table-column type="selection"
                          width="55"
                          align="center"></el-table-column>
-        <el-table-column prop="route"
+        <el-table-column prop="id"
                          label="ID"
                          width="55"
                          align="center"></el-table-column>
-        <el-table-column prop="top_column_name"
-                         label="一级栏目名称"></el-table-column>
-        <el-table-column prop="columnName"
-                         label="二级栏目名称"></el-table-column>
-        <el-table-column prop="subjectName"
-                         label="试卷名称"></el-table-column>
-        <el-table-column prop="route"
-                         label="试卷路由"></el-table-column>
+        <el-table-column prop="name"
+                         label="栏目名称"></el-table-column>
+
         </el-table-column>
         <el-table-column label="操作"
                          width="180"
@@ -65,7 +60,7 @@
             <el-button type="text"
                        icon="el-icon-delete"
                        class="red"
-                       @click="delAllSelection(scope.row.route,'single')">删除</el-button>
+                       @click="delAllSelection(scope.row.id,'single')">删除</el-button>
 
           </template>
         </el-table-column>
@@ -92,40 +87,10 @@
                  label-width="100px"
                  class="demo-formData">
 
-          <!-- <el-form-item label="请选择栏目"
+          <el-form-item label="栏目名称"
                         prop="name">
             <el-input v-model="formData.name"></el-input>
-          </el-form-item> -->
-          <el-form-item label="一级栏目"
-                        prop="columnId">
-            <el-select v-model="formData.TopColumnId"
-                       placeholder="一级栏目">
-              <el-option :label="item.name"
-                         :value="item.id"
-                         v-for="item in TopColumn"
-                         :keys="item.id"></el-option>
-            </el-select>
           </el-form-item>
-
-          <el-form-item label="二级栏目"
-                        prop="columnId">
-            <el-select v-model="formData.columnId"
-                       placeholder="二级栏目">
-              <el-option :label="item.name"
-                         :value="item.id"
-                         v-for="item in column"
-                         :keys="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="请输入标题"
-                        prop="subjectName">
-            <el-input v-model="formData.subjectName"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="栏目名称"
-                        prop="name">
-            <el-input v-model="formData.name"></el-input>
-          </el-form-item> -->
 
         </el-form>
       </template>
@@ -137,28 +102,22 @@
 import interList from '@/common/mixins/list'
 import set from '@/common/mixins/set'
 
-import { ExamSave, ExamDel, ExamList, ColumnList, TopColumnList, TopColumnSave } from '../../../api/index';
+import { TopColumnSave, TopColumnDel, TopColumnList } from '../../../api/index';
 export default {
-  name: 'SubectList',
+  name: 'Column',
   data () {
     return {
-      drawerTitle: '建立关联',
+      drawerTitle: '添加栏目名称',
       isShowDrawer: false,
-      column: [],
-      TopColumn: [],
+      name: '',  //栏目名
       formData: {
-        subjectName: '',
-        columnId: '',   //栏目ID
-        route: '',
-        TopColumnId: ''
+        name: '',
+        id: ''
       },//表单数据
       tableData: [], //当前表数据
       editVisible: false, //弹框删除
       rules: {
-        subjectName: [
-          { required: true, message: '试卷题目名称不能为空', trigger: 'blur' },
-        ],
-        columnId: [
+        name: [
           { required: true, message: '栏目名称不能为空', trigger: 'blur' },
         ],
       }
@@ -177,7 +136,6 @@ export default {
     //编辑数据
     edlt (row) {
       this.drawerTitle = '编辑栏目名称'
-      console.log('row', row)
       this.formData = Object.assign({}, row)
       this.isShowDrawer = true
     },
@@ -185,7 +143,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.formData = {}
-          ExamSave(data).then(res => {
+          TopColumnSave(data).then(res => {
             if (res == undefined) {
               this.getData()
             } else {
@@ -205,7 +163,7 @@ export default {
     getData () {
       let _this = this
       this.loading = true
-      ExamList(this.query).then(res => {
+      TopColumnList(this.query).then(res => {
         this.tableData = res.list;
         this.count = res.page_info.count
         this.loading = false
@@ -214,37 +172,12 @@ export default {
         this.active.error()
         _this.loading = false
       })
-
-
-      ColumnList({ page_size: 50 }).then(res => {
-        console.log('res=', res)
-        if (res != undefined) {
-          this.column = res.list
-          console.log('this.column', this.column)
-        } else {
-          this.active.error()
-        }
-      })
-
-      TopColumnList
-
-      TopColumnList({ page_size: 50 }).then(res => {
-        console.log('res=', res)
-        if (res != undefined) {
-          this.TopColumn = res.list
-          console.log('this.TopColumn', this.TopColumn)
-        } else {
-          this.active.error()
-        }
-      })
-
-
     },
     //单选多选都可删除
-    delAllSelection (route, flag) {
+    delAllSelection (id, flag) {
       //通过点击删除进来的 传入的参数必须为一个数组
       if (flag == 'single') {
-        this.DelId = [route]
+        this.DelId = [id]
       }
       // 二次确认删除
       this.$confirm(`确定要删除ID序号为[${this.DelId}]`, '提示', {
@@ -252,7 +185,7 @@ export default {
       })
         .then(() => {
           this.loading = true
-          ExamDel({ route: this.DelId }).then(res => {
+          TopColumnDel({ id: this.DelId }).then(res => {
             this.active.success()
             this.getData()
           })

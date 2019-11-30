@@ -123,12 +123,18 @@ export default {
           ]
         },
 
-
+        {
+          icon: 'el-icon-lx-copy',
+          index: 'TopColumn',
+          title: '一级栏目管理'
+        },
         {
           icon: 'el-icon-lx-copy',
           index: 'Column',
-          title: '栏目管理'
+          title: '二级栏目管理'
         },
+
+
         {
           icon: 'el-icon-lx-copy',
           index: 'UserVip',

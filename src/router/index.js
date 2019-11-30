@@ -63,7 +63,12 @@ export default new Router({
                 {
                     path: '/Column',
                     component: () => import(/* webpackChunkName: "table" */ '../components/admin/Column/Column.vue'),
-                    meta: { title: '栏目列表' }
+                    meta: { title: '二级栏目列表' }
+                },
+                {
+                    path: '/TopColumn',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/TopColumn/TopColumn.vue'),
+                    meta: { title: '一级栏目列表' }
                 },
                 //管理员列表
                 {

@@ -190,6 +190,51 @@ export const UserVipDel = query => {
 
 
 
+/*
+
+一级栏目列表展示
+
+*/
+
+//一级栏目列表
+export const TopColumnList = query => {
+    return request({
+        url: '/topcolumn/column-list',
+        method: 'get',
+        params: query
+    });
+};
+
+
+export const TopColumnSave = query => {
+    return request({
+        url: '/topcolumn/column-save',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+
+export const TopColumnDel = query => {
+    return request({
+        url: '/topcolumn/column-del',
+        method: 'post',
+        data: qs.stringify(query)
+
+    });
+};
+
+
+/*
+
+一级栏目列表展示
+
+*/
+
+
+
+
+
 
 
 
