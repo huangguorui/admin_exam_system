@@ -37,7 +37,7 @@
         <el-table-column type="selection"
                          width="55"
                          align="center"></el-table-column>
-        <el-table-column prop="id"
+        <el-table-column prop="route"
                          label="ID"
                          width="55"
                          align="center"></el-table-column>
@@ -63,7 +63,7 @@
             <el-button type="text"
                        icon="el-icon-delete"
                        class="red"
-                       @click="delAllSelection(scope.row.id,'single')">删除</el-button>
+                       @click="delAllSelection(scope.row.route,'single')">删除</el-button>
 
           </template>
         </el-table-column>
@@ -136,7 +136,7 @@ export default {
       formData: {
         subjectName: '',
         columnId: '',   //栏目ID
-        id: ''
+        route: ''
       },//表单数据
       tableData: [], //当前表数据
       editVisible: false, //弹框删除
@@ -215,10 +215,10 @@ export default {
 
     },
     //单选多选都可删除
-    delAllSelection (id, flag) {
+    delAllSelection (route, flag) {
       //通过点击删除进来的 传入的参数必须为一个数组
       if (flag == 'single') {
-        this.DelId = [id]
+        this.DelId = [route]
       }
       // 二次确认删除
       this.$confirm(`确定要删除ID序号为[${this.DelId}]`, '提示', {
@@ -226,7 +226,7 @@ export default {
       })
         .then(() => {
           this.loading = true
-          ExamDel({ id: this.DelId }).then(res => {
+          ExamDel({ route: this.DelId }).then(res => {
             this.active.success()
             this.getData()
           })
