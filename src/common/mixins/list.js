@@ -11,6 +11,7 @@ export default {
         search: '', //搜索
         page: 1, //第一页
         page_size: 10, //页数
+        count: 0,
         multipleSelection: [], //删除选中的数据
         DelId: [], //被删除数据的id
 
@@ -41,7 +42,7 @@ export default {
     currentChange() {
       // console.log(1)
     },
-    // 分页导航
+    // 点击切换分页
     handlePageChange(val) {
       this.$set(this.query, 'page', val);
       this.getData();
@@ -68,22 +69,23 @@ export default {
       this.getData();
     },
 
-    // currentChange () {
-    //   // 获取列表
-    //   this._getList({
-    //     page: this.searchData.current,
-    //     page_size: this.searchData.size
-    //   })
-    // },
-    // pageChange (page) {
-    //   this.searchData.current = page
-    //   let data = Object.assign({
-    //     page,
-    //     size: this.searchData.size
-    //   }, this.searchForm)
-    //   this._getList(data)
-    //   // this._getList(page, this.searchForm)
-    // },
+    currentChange() {
+      // 获取列表
+      this.getData({
+        page: this.query.page,
+        page_size: this.query.page_size
+      })
+    },
+
+    pageChange(page) {
+      this.searchData.page = page
+      let data = Object.assign({
+        page,
+        size: this.searchData.size
+      }, this.searchForm)
+      this.getData(data)
+      // this._getList(page, this.searchForm)
+    },
     // // 条件查询
     // searchPage () {
     //   console.log(this.searchForm)
@@ -92,10 +94,10 @@ export default {
     //     size: this.searchData.size
     //   }, this.searchForm)
     //   this._getList(data)
-    //   // this._getList(this.searchData.current, this.searchForm)
+    //   // this._getList(this.searchData.page, this.searchForm)
     // },
     // searchChange () {
-    //   this.searchData.current = 1
+    //   this.searchData.page = 1
     // }
   }
 }

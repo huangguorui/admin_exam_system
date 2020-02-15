@@ -85,6 +85,12 @@
 </template>
 
 <script>
+
+import interList from '@/common/mixins/list'
+import set from '@/common/mixins/set'
+
+import { UserSave, UserDel, UserList, FeedbackList } from '../../api/index';
+
 export default {
   name: 'tabs',
   data () {
@@ -108,7 +114,24 @@ export default {
       }]
     }
   },
+  mixins: [interList],
   methods: {
+
+    getData () {
+      let _this = this
+      this.loading = true
+      UserList(this.query).then(res => {
+        this.tableData = res.list;
+        this.query = res.page_info
+        this.loading = false
+
+      }).catch(function (error) {
+        this.active.error()
+        _this.loading = false
+      })
+    },
+
+
     handleRead (index) {
       const item = this.unread.splice(index, 1);
       console.log(item);

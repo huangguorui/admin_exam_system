@@ -2,19 +2,19 @@
   <div class="">
     <div class="crumbs">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item><i class="el-icon-lx-copy"></i> 用户意见反馈</el-breadcrumb-item>
+        <el-breadcrumb-item><i class="el-icon-lx-copy"></i> 选项卡</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
       <el-tabs v-model="message">
-        <el-tab-pane :label="`未读消息(${unread.length})`"
+        <el-tab-pane :label="`未读消息(${tableData.length})`"
                      name="first">
-          <el-table :data="unread"
+          <el-table :data="tableData"
                     :show-header="false"
                     style="width: 100%">
             <el-table-column>
               <template slot-scope="scope">
-                <span class="message-title">{{scope.row.title}}</span>
+                <span class="message-describe">{{scope.row.describe}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="date"
@@ -38,8 +38,7 @@
                       style="width: 100%">
               <el-table-column>
                 <template slot-scope="scope">
-                  <span class="message-title">{{scope.row.title}}</span>
-                  <span class="message-desc">{{scope.row.title}}</span>
+                  <span class="message-describe">{{scope.row.describe}}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="date"
@@ -64,7 +63,7 @@
                       style="width: 100%">
               <el-table-column>
                 <template slot-scope="scope">
-                  <span class="message-title">{{scope.row.title}}</span>
+                  <span class="message-describe">用户昵称为：{{scope.row.user_nickname}}反馈的意见：{{scope.row.describe}}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="date"
@@ -86,32 +85,55 @@
 </template>
 
 <script>
+
+import interList from '@/common/mixins/list'
+import set from '@/common/mixins/set'
+
+import { UserSave, UserDel, UserList, FeedbackList } from '@/api/index';
+
 export default {
   name: 'tabs',
   data () {
     return {
       message: 'first',
       showHeader: false,
-      unread: [{
+      tableData: [{
         date: '2018-04-19 20:00:00',
-        title: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护',
+        describe: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护',
       }, {
         date: '2018-04-19 21:00:00',
-        title: '今晚12点整发大红包，先到先得',
+        describe: '今晚12点整发大红包，先到先得',
       }],
       read: [{
         date: '2018-04-19 20:00:00',
-        title: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护'
+        describe: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护'
       }],
       recycle: [{
         date: '2018-04-19 20:00:00',
-        title: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护'
+        describe: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护'
       }]
     }
   },
+  mixins: [interList],
   methods: {
+
+    getData () {
+      let _this = this
+      this.loading = true
+      FeedbackList(this.query).then(res => {
+        this.tableData = res.list;
+        this.query = res.page_info
+        this.loading = false
+
+      }).catch(function (error) {
+        this.active.error()
+        _this.loading = false
+      })
+    },
+
+
     handleRead (index) {
-      const item = this.unread.splice(index, 1);
+      const item = this.tableData.splice(index, 1);
       console.log(item);
       this.read = item.concat(this.read);
     },
@@ -126,7 +148,7 @@ export default {
   },
   computed: {
     unreadNum () {
-      return this.unread.length;
+      return this.tableData.length;
     }
   }
 }
@@ -134,7 +156,7 @@ export default {
 </script>
 
 <style>
-.message-title {
+.message-describe {
     cursor: pointer;
 }
 .handle-row {

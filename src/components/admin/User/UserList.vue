@@ -108,7 +108,7 @@
                        layout="total, prev, pager, next"
                        :current-page="query.page"
                        :page-size="query.page_size"
-                       :total="count"
+                       :total="query.count"
                        @current-change="handlePageChange"></el-pagination>
       </div>
     </div>
@@ -294,8 +294,6 @@ export default {
     applySubmit (data, formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-
-
           UserSave(data).then(res => {
             //清空数据
             this.$refs[formName].resetFields()
@@ -323,7 +321,7 @@ export default {
       this.loading = true
       UserList(this.query).then(res => {
         this.tableData = res.list;
-        this.count = res.page_info.count
+        this.query = res.page_info
         this.loading = false
 
       }).catch(function (error) {

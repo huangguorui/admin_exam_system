@@ -118,7 +118,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="请输入标题"
+          <el-form-item label="输入标题"
                         prop="subjectName">
             <el-input v-model="formData.subjectName"></el-input>
           </el-form-item>

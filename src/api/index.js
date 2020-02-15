@@ -224,6 +224,17 @@ export const TopColumnDel = query => {
     });
 };
 
+export const FeedbackList = query => {
+    return request({
+        url: '/feedback/list',
+        method: 'get',
+        params: query
+
+    });
+};
+
+
+
 
 /*
 
