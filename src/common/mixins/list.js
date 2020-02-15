@@ -1,47 +1,53 @@
-
 /**
  * 自定义列表混合带分页带条件查询
  * @author Maybe
  */
 export default {
   name: 'List',
-  data () {
+  data() {
     return {
-      loading: true,   //loading加载
+      loading: true, //loading加载
       query: {
-        search: '',//搜索
-        page: 1,   //第一页
+        search: '', //搜索
+        page: 1, //第一页
         page_size: 10, //页数
-        multipleSelection: [],  //删除选中的数据
-        DelId: [],   //被删除数据的id
+        multipleSelection: [], //删除选中的数据
+        DelId: [], //被删除数据的id
 
       },
-      count: 0,   //总页数
-      isBtnDisable: true,  //全选按钮默认禁用
+      count: 0, //总页数
+      isBtnDisable: true, //全选按钮默认禁用
     }
   },
   computed: {
 
   },
-  created () {
+  watch: {
+    $route(to, from) {
+      // console.log(to.path);
+      this.getData()
+
+    }
+  },
+  created() {
     this.currentChange()
   },
   methods: {
-    customPageSize () {
+    customPageSize() {
       this.query.page_size = 50
 
     },
 
-    currentChange () {
+    currentChange() {
       // console.log(1)
     },
     // 分页导航
-    handlePageChange (val) {
+    handlePageChange(val) {
       this.$set(this.query, 'page', val);
       this.getData();
     },
     // 多选操作
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       console.log(val)
       if (val.length == 0) {
         this.isBtnDisable = true
@@ -56,7 +62,7 @@ export default {
       })
     },
     // 触发搜索按钮
-    handleSearch () {
+    handleSearch() {
       console.log(this.query)
       this.$set(this.query, 'page', 1);
       this.getData();

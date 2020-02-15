@@ -30,7 +30,7 @@
 
             <!-- <el-upload class="upload-demo"
                        drag
-                       action="//www.vuecli.com/api/user/user-photo"
+                       action="//www.newexam.com/api/user/user-photo"
                        multiple>
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -60,7 +60,8 @@
             <el-date-picker v-model="ruleForm.user_birthday"
                             type="date"
                             @on-change="ruleForm.user_birthday=$event"
-                            placeholder="选择日期">
+                            placeholder="选择日期"
+                            value-format="yyyy-MM-dd">
             </el-date-picker>
           </el-form-item>
 
@@ -173,6 +174,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           UserSave(this.ruleForm).then(res => {
+            console.log("res=", res)
+
             this.active.success()
             this.ruleForm = {}
             this.active.success()

@@ -59,8 +59,8 @@
                          align="center">
           <template slot-scope="scope">
             <el-image class="table-td-thumb"
-                      :src="'http://www.vuecli.com'+scope.row.user_img"
-                      :preview-src-list="['http://www.vuecli.com'+scope.row.user_img]"></el-image>
+                      :src="scope.row.user_img"
+                      :preview-src-list="[scope.row.user_img]"></el-image>
           </template>
         </el-table-column>
 
@@ -134,7 +134,7 @@
 
             <!-- <el-upload class="upload-demo"
 drag
-action="//www.vuecli.com/api/user/user-photo"
+action="//www.newexam.com/api/user/user-photo"
 multiple>
 <i class="el-icon-upload"></i>
 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>

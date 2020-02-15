@@ -59,8 +59,8 @@
                          align="center">
           <template slot-scope="scope">
             <el-image class="table-td-thumb"
-                      :src="'http://www.vuecli.com'+scope.row.user_img"
-                      :preview-src-list="['http://www.vuecli.com'+scope.row.user_img]"></el-image>
+                      :src="scope.row.user_img"
+                      :preview-src-list="[scope.row.user_img]"></el-image>
           </template>
         </el-table-column>
 
@@ -134,7 +134,7 @@
 
             <!-- <el-upload class="upload-demo"
 drag
-action="//www.vuecli.com/api/user/user-photo"
+action="//www.newexam.com/api/user/user-photo"
 multiple>
 <i class="el-icon-upload"></i>
 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -163,7 +163,8 @@ slot="tip">只能上传jpg/png文件，且不超过500kb</div>
                         prop="user_birthday">
             <el-date-picker v-model="formData.user_birthday"
                             type="date"
-                            placeholder="选择日期">
+                            placeholder="选择日期"
+                            value-format="yyyy-MM-dd">
             </el-date-picker>
           </el-form-item>
 
@@ -251,7 +252,7 @@ export default {
           { required: true, message: '请输入用户真实姓名', trigger: 'blur' }
         ],
         user_birthday: [
-          { type: 'date', required: true, message: '请选择用户生日', trigger: 'blur' }
+          { required: true, message: '请选择用户生日', trigger: 'blur' }
         ],
         user_pwd: [
           { required: true, message: '请输入密码', trigger: 'blur' },

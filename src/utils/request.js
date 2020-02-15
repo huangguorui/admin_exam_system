@@ -1,10 +1,15 @@
 import axios from 'axios';
 
-import { Message } from 'element-ui';
+import {
+    Message
+} from 'element-ui';
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     // easy-mock服务挂了，暂时不使用了
-    baseURL: 'http://www.vuecli.com/adminapi/',
+
+    //   baseURL: 'http://api.huanggr.cn/adminapi/',
+    baseURL: 'http://www.exam.com/adminapi/',
+
     timeout: 5000,
     // headers: { 'Content-type': 'application/json; charset=utf-8' },
 

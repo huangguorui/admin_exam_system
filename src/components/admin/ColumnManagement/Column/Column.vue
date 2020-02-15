@@ -102,7 +102,7 @@
 import interList from '@/common/mixins/list'
 import set from '@/common/mixins/set'
 
-import { ColumnSave, ColumnDel, ColumnList } from '../../../api/index';
+import { ColumnSave, ColumnDel, ColumnList } from '../../../../api/index';
 export default {
   name: 'Column',
   data () {

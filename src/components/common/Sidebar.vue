@@ -108,11 +108,11 @@ export default {
           subs: [
             {
               index: 'SingleAdd',
-              title: '单个试题添加'
+              title: '试题添加'
             },
             {
               index: 'OneSubjectImport',
-              title: '一份试卷导入'
+              title: '试卷导入'
             },
 
             {
@@ -122,18 +122,24 @@ export default {
 
           ]
         },
-
         {
-          icon: 'el-icon-lx-copy',
-          index: 'TopColumn',
-          title: '一级栏目管理'
-        },
-        {
-          icon: 'el-icon-lx-copy',
-          index: 'Column',
-          title: '二级栏目管理'
-        },
+          icon: 'el-icon-lx-calendar',
+          index: 'a',
+          title: '栏目管理',
+          subs: [
+            {
+              icon: 'el-icon-lx-copy',
+              index: 'TopColumn',
+              title: '一级栏目管理'
+            },
+            {
+              icon: 'el-icon-lx-copy',
+              index: 'Column',
+              title: '二级栏目管理'
+            },
 
+          ]
+        },
 
         {
           icon: 'el-icon-lx-copy',

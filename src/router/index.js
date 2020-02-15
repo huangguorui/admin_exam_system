@@ -62,14 +62,21 @@ export default new Router({
                 },
                 {
                     path: '/Column',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/Column/Column.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/ColumnManagement/Column/Column.vue'),
                     meta: { title: '二级栏目列表' }
                 },
                 {
                     path: '/TopColumn',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/TopColumn/TopColumn.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/admin/ColumnManagement/TopColumn/TopColumn.vue'),
                     meta: { title: '一级栏目列表' }
                 },
+                // {
+                //     path: '/ColumnManagement',
+                //     component: () => import(/* webpackChunkName: "table" */ '../components/admin/TopColumn/TopColumn.vue'),
+                //     meta: { title: '栏目管理' }
+                // },
+                
+
                 //管理员列表
                 {
                     path: '/AdministratorsList',
